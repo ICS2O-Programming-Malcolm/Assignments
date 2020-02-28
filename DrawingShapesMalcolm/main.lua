@@ -8,10 +8,11 @@
 -- Your code here
 
 -- create my local variables
-local pentagon 
-local triangle 
-local octagon 
-local hexagon 
+local myPentagon 
+local myPentagonVertices = {-70, 60, -20, 20, 80, -60, 50, -50, -80, -40}
+local myTriangle 
+local myOctagon 
+local myHexagon 
 
 -- set the background colour of my screen
 display.setDefault("background", 1/255, 11/255, 11/255)
@@ -20,4 +21,4 @@ display.setDefault("background", 1/255, 11/255, 11/255)
 display.setStatusBar(display.HiddenStatusBar)
 
 -- draw the pentagon that is in the top left of the screen
-pentagon = display.newPolygon(display.contentWidth/4, display.contentHeight, -70, 60, -20, 20, 80, -60, 50, -50, -80, -40,)
+myPentagon = display.newPolygon(display.contentWidth/4, display.contentHeight/4, myPentagonVertices)
