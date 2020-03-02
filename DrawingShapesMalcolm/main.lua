@@ -13,9 +13,9 @@ local myPentagonVertices = {50, -50, -80, -40, -70, 60, -20, 20, 80, 60}
 local myTriangle 
 local myTriangleVertices = {-50, 60, 70, 30, -10, -40}
 local myOctagon
-local myOctagonVertices = {}
+local myOctagonVertices = {-20, 60, 20, 60, 60, 20, 60, -20, 20, -60, -20, -60, -60, -20, -60, 20}
 local myHexagon 
-local myHexagonVertices = {}
+local myHexagonVertices = {-80, 50, 0, 50, 60, 0, -10, -70, -30, 10, -60, -40}
 
 -- set the background colour of my screen
 display.setDefault("background", 155/255, 11/255, 11/255)
@@ -45,10 +45,10 @@ myPentagon:scale(1, -1)
 
 -- TRIANGLE
 -- draw the triangle that is in the top right of the screen
-myTriangle = display.newPolygon(display.contentWidth/2, display.contentHeight/4, myTriangleVertices)
+myTriangle = display.newPolygon(display.contentWidth*(3/4), display.contentHeight/4, myTriangleVertices)
 
 -- anchor the triangle at the top right corner of the screen
-myTriangle.x = display.contentWidth/2
+myTriangle.x = display.contentWidth*(3/4)
 myTriangle.y = display.contentHeight/4
 
 -- set the width of the border of the triangle
@@ -58,7 +58,47 @@ myTriangle.strokeWidth = 15
 myTriangle:setFillColor(0.3, 0.7, 0.6)
 
 -- set the colour of the border if the triangle
-myTriangle:setStrokeColor(2, 5, 1)
+myTriangle:setStrokeColor(1, 0.5, 0)
 
 -- flip the triangle
 myTriangle:scale(1, -1)
+
+-- OCTAGON
+-- draw the octagon that is in the bottom left of the screen
+myOctagon = display.newPolygon(display.contentWidth/4, display.contentHeight*(3/4), myOctagonVertices)
+
+-- anchor the octagon at the bottom left corner of the screen
+myOctagon.x = display.contentWidth/4
+myOctagon.y = display.contentHeight*(3/4)
+
+-- set the width of the border of the octagon
+myOctagon.strokeWidth = 15
+
+-- set the colour of the octagon
+myOctagon:setFillColor(0.7, 0.7, 0.7)
+
+-- set the colour of the border if the octagon
+myOctagon:setStrokeColor(0, 0, 1)
+
+-- flip the octagon
+myOctagon:scale(1, -1)
+
+-- HEXAGON
+-- draw the hexagon that is in the bottom right of the screen
+myHexagon = display.newPolygon(display.contentWidth*(3/4), display.contentHeight*(3/4), myHexagonVertices)
+
+-- anchor the hexagon at the top bottom right of the screen and set its (x,y) position
+myHexagon.x = display.contentWidth*(3/4)
+myHexagon.y = display.contentHeight*(3/4)
+
+-- set the width of the border of the hexagon
+myHexagon.strokeWidth = 15
+
+-- set the colour of the hexagon
+myHexagon:setFillColor(0.2, 0.2, 0.5)
+
+-- set the colour of the border
+myHexagon:setStrokeColor(0, 1, 0)
+
+-- flip the hexagon
+myHexagon:scale(1, -1)
