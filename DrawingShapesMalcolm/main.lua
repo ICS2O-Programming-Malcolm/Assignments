@@ -9,13 +9,17 @@
 
 -- create my local variables
 local myPentagon 
-local myPentagonVertices = {50, -50, -80, -40, -70, 60, -20, 20, 80, 60} 
+local myPentagonVertices = {50, -50, -80, -40, -70, 60, -20, 20, 80, 60}
+local myPentagonText 
 local myTriangle 
 local myTriangleVertices = {-50, 60, 70, 30, -10, -40}
+local myTriangleText
 local myOctagon
 local myOctagonVertices = {-20, 60, 20, 60, 60, 20, 60, -20, 20, -60, -20, -60, -60, -20, -60, 20}
+local myOctagonText
 local myHexagon 
 local myHexagonVertices = {-80, 50, 0, 50, 60, 0, -10, -70, -30, 10, -60, -40}
+local myHexagonText
 
 -- set the background colour of my screen
 display.setDefault("background", 155/255, 11/255, 11/255)
@@ -43,6 +47,9 @@ myPentagon:setStrokeColor(0, 1, 1)
 -- flip the pentagon
 myPentagon:scale(1, -1)
 
+-- label the pentagon
+myPentagonText = display.newText("Pentagon", myPentagon.x, myPentagon.y - 100, Arial, 50) 
+
 -- TRIANGLE
 -- draw the triangle that is in the top right of the screen
 myTriangle = display.newPolygon(display.contentWidth*(3/4), display.contentHeight/4, myTriangleVertices)
@@ -62,6 +69,9 @@ myTriangle:setStrokeColor(1, 0.5, 0)
 
 -- flip the triangle
 myTriangle:scale(1, -1)
+
+-- label the triangle
+myTriangleText = display.newText("Triangle", myTriangle.x, myTriangle.y - 100, Arial, 50) 
 
 -- OCTAGON
 -- draw the octagon that is in the bottom left of the screen
@@ -83,6 +93,9 @@ myOctagon:setStrokeColor(0, 0, 1)
 -- flip the octagon
 myOctagon:scale(1, -1)
 
+-- label the octagon
+myOctagonText = display.newText("Octagon", myOctagon.x, myOctagon.y - 100, Arial, 50) 
+
 -- HEXAGON
 -- draw the hexagon that is in the bottom right of the screen
 myHexagon = display.newPolygon(display.contentWidth*(3/4), display.contentHeight*(3/4), myHexagonVertices)
@@ -102,3 +115,6 @@ myHexagon:setStrokeColor(0, 1, 0)
 
 -- flip the hexagon
 myHexagon:scale(1, -1)
+
+-- label the hexagon
+myHexagonText = display.newText("Hexagon", myHexagon.x, myHexagon.y - 100, Arial, 50) 
