@@ -11,7 +11,7 @@ display.setStatusBar(display.HiddenStatusBar)
 
 -- global variables
 scrollSpeed = 3
-
+scrollSpeed2 = 0.01
 -- create text variable
 local programText
 
@@ -21,6 +21,13 @@ local backgroundImage = display.newImageRect("Images/background.jpg", 2048, 1536
 -- label the program and colour the text
 programText = display.newText("Super Silly Space", display.contentWidth/2 + 120, display.contentHeight/1 - 80, Arial, 80)
 programText:setTextColor(255/255, 106/255, 0/255) 
+-----------------------------------------------------------------------------------------
+-- Sounds
+-----------------------------------------------------------------------------------------
+-- load the sound
+local timewarpSound = audio.loadSound( "Sounds/timewarp.mp3")
+-- play the sound
+audio.play( timewarpSound, {duration = 10000} )
 
 -- CODE FOR THE BLACKHOLE
 -- character image with width and height
@@ -50,6 +57,9 @@ local function MoveBlackhole(event)
 	blackhole.x = blackhole.x + scrollSpeed
 	-- make the blackhole grow as it moves
 	blackhole:scale(1, 1)
+	-- make the blackhole grow as it moves
+	blackhole.xScale = blackhole.xScale + scrollSpeed2
+	blackhole.yScale = blackhole.yScale + scrollSpeed2
 end
 
 -- MoveBlackhole will be called over and over again
@@ -73,10 +83,6 @@ rocketship.y = display.contentHeight*(2/3)
 local function MoveRocketship(event)
 	-- add the scroll speed to the x-value of the ship
 	rocketship.x = rocketship.x - scrollSpeed - 2
-	-- if ship reaches border of screen, it will turn around
-	if rocketship.x = 0 then
-	rocketship.x = rocketship.x + scrollSpeed + 2
-
 end
 
 -- MoveRocketship will be called over and over again
@@ -106,7 +112,11 @@ local function MoveAlien(event)
 	alien.y = alien.y - scrollSpeed - 2
 	-- change the transparency of the alien every time it moves so that it fades out
 	alien.alpha = alien.alpha - 0.000000001
+	-- make alien spin
+	alien:rotate(10)
+	timer.performWithDelay(10000)
 end
+
 
 -- MoveAlien will be called over and over again
 Runtime:addEventListener("enterFrame", MoveAlien)
