@@ -73,10 +73,6 @@ rocketship.y = display.contentHeight*(2/3)
 local function MoveRocketship(event)
 	-- add the scroll speed to the x-value of the ship
 	rocketship.x = rocketship.x - scrollSpeed - 2
-	-- if ship reaches border of screen, it will turn around
-	if rocketship.x = 0 then
-	rocketship.x = rocketship.x + scrollSpeed + 2
-
 end
 
 -- MoveRocketship will be called over and over again
