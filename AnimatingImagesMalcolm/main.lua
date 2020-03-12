@@ -72,8 +72,8 @@ local function MoveBlackhole(event)
 	blackhole.y = CalculateY(blackhole.x)
 
 	-- make the blackhole grow as it moves
-	blackhole.xScale = blackhole.xScale + scrollSpeed2
-	blackhole.yScale = blackhole.yScale + scrollSpeed2
+	blackhole.xScale = blackhole.xScale + scrollSpeed2 
+	blackhole.yScale = blackhole.yScale + scrollSpeed2 
 end
 
 -- MoveBlackhole will be called over and over again
