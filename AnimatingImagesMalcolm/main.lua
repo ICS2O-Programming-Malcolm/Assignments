@@ -2,7 +2,7 @@
 -- Title: AnimatingImagesMalcolm
 -- Name: Malcolm Cantin
 -- Course: ICS2O
--- This program hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+-- This program has three different objects, each moving or physically changing differently
 -----------------------------------------------------------------------------------------
 -- hide the status bar
 display.setStatusBar(display.HiddenStatusBar)
