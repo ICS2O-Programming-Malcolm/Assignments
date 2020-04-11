@@ -2,7 +2,11 @@
 -- Title: MathQuizMalcolm
 -- Name: Malcolm Cantin
 -- Course: ICS2O
--- This program 
+-- This program is a math game that has a variety of math questions that can be asked 
+-- to the user, to which the user can input an answer. If the user gets 5 correct 
+-- answers, they win the game. If they lose 3 lives, they will lose the game. Also, this 
+-- program has a timer that gives the user only 10 seconds to answer each question. If 
+-- the time runs out, the user will also lose a life. 
 -----------------------------------------------------------------------------------------
 
 -- hide the status bar
@@ -36,8 +40,10 @@ local counter
 
 local points = 0
 
+local amountSpun = 1080
+
 -- variables for the timer
-local totalSeconds = 10
+local TOTAL_SECONDS = 10
 local secondsLeft = 10
 local clockText
 local countDownTimer
@@ -84,15 +90,15 @@ backgroundSoundChannel = audio.play(backgroundSound)
 -- an answer
 local function AskQuestion()
 
-    -- generate a random number between 1 and 4
+    -- generate a random number between 1 and 7 which will decide what operator to do
     randomOperator = math.random(1, 7)
     
     -- if the random operator is 1, then do addition
     if (randomOperator == 1) then
 
         -- generate 2 random numbers between a max. and a min. number
-	    randomNumber1 = math.random(0, 20)
-        randomNumber2 = math.random(0, 20)
+	    randomNumber1 = math.random(1, 20)
+        randomNumber2 = math.random(1, 20)
 
         -- calculate the correct answer
         correctAnswer = randomNumber1 + randomNumber2
@@ -104,10 +110,10 @@ local function AskQuestion()
     elseif (randomOperator == 2) then
 
         -- generate 2 random numbers between a max. and a min. number
-	    randomNumber1 = math.random(0, 20)
-        randomNumber2 = math.random(0, 20)        
+	    randomNumber1 = math.random(1, 20)
+        randomNumber2 = math.random(1, 20)        
 
-        -- to ensure we get no geative answers:
+        -- to ensure we get no negative answers:
         if (randomNumber2 > randomNumber1) then
         
             -- calculate answer with numbers flipped
@@ -130,8 +136,8 @@ local function AskQuestion()
     elseif (randomOperator == 3) then
 
         -- generate 2 random numbers between a max. and a min. number
-	    randomNumber1 = math.random(0, 10)
-        randomNumber2 = math.random(0, 10) 
+	    randomNumber1 = math.random(1, 10)
+        randomNumber2 = math.random(1, 10) 
 
         -- calculate the correct answer
         correctAnswer = randomNumber1*randomNumber2
@@ -143,8 +149,8 @@ local function AskQuestion()
     elseif (randomOperator == 4) then
 
         -- generate 2 random numbers between a max. and a min. number
-	    randomNumber1 = math.random(0, 10)
-        randomNumber2 = math.random(0, 10) 
+	    randomNumber1 = math.random(1, 10)
+        randomNumber2 = math.random(1, 10) 
 
         -- calculate the correct answer
         tempAnswer = randomNumber1*randomNumber2
@@ -197,7 +203,7 @@ local function AskQuestion()
         end
 
         -- create question in text object
-        questionObject.text = randomNumber1 .. " ^ " .. randomNumber2
+        questionObject.text = randomNumber1 .. " ^ " .. randomNumber2 .. " = "
 
     elseif (randomOperator == 7) then
 
@@ -209,6 +215,7 @@ local function AskQuestion()
 
         correctAnswer = math.sqrt(randomNumber1)
 
+        -- create question in text object
         questionObject.text = "√" .. randomNumber1 .. " = "
 
     end
@@ -219,38 +226,50 @@ end
 -- updates the number of lives remaining
 local function LoseLives()
 
-	incorrectSoundChannel = audio.play(incorrectSound)
-
-	lives = lives - 1
-
-	secondsLeft = totalSeconds
+    -- play incorrect sound
+    incorrectSoundChannel = audio.play(incorrectSound)
+    
+    -- subtract a life
+    lives = lives - 1
+    
+    -- reset the number of seconds
+	secondsLeft = TOTAL_SECONDS
 
     if (lives == 3) then
         
+        -- make heart 3 invisible
         heart3.isVisible = false
 
     elseif (lives == 2) then
         
+        -- make heart 2 invisible
         heart2.isVisible = false
 
     elseif (lives == 1) then
         
+        -- make heart 1 invisible
         heart1.isVisible = false
 
+        -- stop the game from doing AskQuestion()
         stopGame = true
 
+        -- get rid of the timer
         timer.cancel(countDownTimer)
-
-        questionObject.isVisible = false
-
         clockText.isVisible = false
 
+        -- make the quesion text invisible
+        questionObject.isVisible = false
+
+        -- display the game over image
         gameOverObject.isVisible = true
 
-        gameOverSoundChannel = audio.play(gameOverSound)
-        
+        -- stop the background music
         backgroundSound = audio.stop(backgroundSoundChannel)
 
+        -- play the game over music
+        gameOverSoundChannel = audio.play(gameOverSound)
+
+        -- make the numeric field invisible
         numericField.isVisible = false
 
     end
@@ -287,6 +306,7 @@ local function UpdateTime()
 
         LoseLives()
         
+        -- if the game has not been stopped, call AskQuestion()
         if (stopGame == false) then
         
             AskQuestion()
@@ -319,12 +339,26 @@ local function HideIncorrect()
 
     incorrectObject.isVisible = false
     
+    -- if the game has not been stopped, call AskQuestion()
     if (stopGame == false) then
         
         AskQuestion()
     
     end
     
+end
+
+local function SpinYouWin()
+
+    if (amountSpun < 1080) then
+
+        -- make the You Win image spin
+        youWinObject:rotate(5)
+
+        amountSpun = amountSpun + 5
+
+    end
+
 end
 
 -- This function controls the numeric field that a user can input answers into
@@ -344,14 +378,17 @@ local function NumericFieldListener(event)
 		-- if the user's answer and the correct answer are the same:
 		if (userAnswer == correctAnswer) then
 		
-			-- give a point if the user gets the correct answer, display "Correct!", and play a correct answer sound
+			-- give a point
             points = points + 1
-            
+
+            -- display "Correct!"
             correctObject.isVisible = true
-            
+
+            -- play a correct answer sound
             correctSoundChannel = audio.play(correctSound)
             
-			secondsLeft = totalSeconds
+            -- reset the number of seconds on the timer
+			secondsLeft = TOTAL_SECONDS
 
 			-- update it in the display object
 			pointsText.text = "Number Correct = " .. points
@@ -362,42 +399,53 @@ local function NumericFieldListener(event)
             --clear the text field
             event.target.text = ""
             
+            -- if the user reaches 5 points, they win
             if (points == 5) then
 
+                -- stop the game from doing AskQuestion()
                 stopGame = true
 
+                -- get rid of the timer
                 timer.cancel(countDownTimer)
-        
-                questionObject.isVisible = false
-        
                 clockText.isVisible = false
-        
+                
+                -- make the quesion text invisible 
+                questionObject.isVisible = false
+                
+                -- display the you win image and call the function to make the image spin
                 youWinObject.isVisible = true
-        
+
+                -- image animation for You Win
+                amountSpun = 0
+                SpinYouWin()
+                
+                -- stop the background music
+                backgroundSound = audio.stop(backgroundSoundChannel)
+
+                -- play the you win music
                 youWinSoundChannel = audio.play(youWinSound)
                 
-                backgroundSound = audio.stop(backgroundSoundChannel)
-        
+                -- make the numeric field invisible
                 numericField.isVisible = false
 
             end
 
 		else
 
-			-- display "Incorrect!", show the right answer, and subtract one life
+			-- display "Incorrect!" for 2 seconds
             incorrectObject.isVisible = true
-            
             timer.performWithDelay(2000, HideIncorrect)
 
+            -- tell the user the correct answer for 2 seconds
             correctAnswerText = display.newText( "The correct answer is " .. correctAnswer, display.contentWidth/2, display.contentHeight*(4/5) - 35, nil, 50)
             correctAnswerText:setTextColor(204/255, 204/255, 0/255)
             correctAnswerText.isVisible = true
-    
             timer.performWithDelay(2000, HideCorrectAnswerText)
             
             -- clear the text field
             event.target.text = ""
             
+            -- call the LoseLives() function to update the number of lives remaining
 			LoseLives()
 
 			-- play incorrect answer sound
@@ -481,3 +529,5 @@ AskQuestion()
 
 -- update the timer
 StartTimer()
+
+Runtime:addEventListener("enterFrame", SpinYouWin)
