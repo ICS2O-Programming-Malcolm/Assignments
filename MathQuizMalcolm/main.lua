@@ -77,7 +77,7 @@ local youWinSound = audio.loadSound("Sounds/you_win.mp3")
 local youWinSoundChannel
 
 -- Background music
-local backgroundSound = audio.loadSound("Sounds/The Price Is Right.mp3")
+local backgroundSound = audio.loadSound("Sounds/The Price is Right.mp3")
 local backgroundSoundChannel
 
 -- Play the background music when the game begins
