@@ -2,9 +2,9 @@
 --
 -- splash_screen.lua
 -- Created by: Malcolm Cantin
--- Date: April 24, 2020
--- Description: This is the splash screen of the game. It displays the 
--- company logo that...
+-- Date: May 25, 2020
+-- Description: This is the splash screen of the game. It animates parts of my company 
+-- logo to come together on the screen.
 -----------------------------------------------------------------------------------------
 
 -- Use Composer Library
@@ -23,9 +23,25 @@ local scene = composer.newScene( sceneName )
 -----------------------------------------------------------------------------------------
  
 -- The local variables for this scene
-local wizard
-local scrollXSpeed = 8
-local scrollYSpeed = -3
+local background
+
+local text
+local scrollSpeedText = 6
+local movingText = true
+
+local crown
+
+local key
+
+local trophy
+local trophyScrollXSpeed = 8
+local trophyScrollYSpeed = -3
+local movingTrophy = true
+
+----------------------------------------------------------------------------------------
+-- SOUNDS
+----------------------------------------------------------------------------------------
+
 local splashScreenSound = audio.loadSound("Sounds/splashScreenSound.mp3")
 local splashScreenSoundChannel
 
@@ -33,12 +49,53 @@ local splashScreenSoundChannel
 -- LOCAL FUNCTIONS
 --------------------------------------------------------------------------------------------
 
--- The function that moves the wizard across the screen
-local function moveWizard()
-    wizard.x = wizard.x + scrollXSpeed
-    wizard.y = wizard.y + scrollYSpeed
+local function StopTrophy()
+	if (trophy.x >= 768) and (trophy.y <= 192) then
 
-    wizard:rotate(6)
+        movingTrophy = false
+        
+        trophy:rotate(217)
+
+        trophy.x = 850
+        trophy.y = 130
+
+	end
+
+end
+
+-- The function that moves the trophy across the screen
+local function MoveTrophy()
+    if (movingTrophy == true) then
+
+        trophy.x = trophy.x + trophyScrollXSpeed
+        trophy.y = trophy.y + trophyScrollYSpeed
+
+        trophy:rotate(6)
+
+        StopTrophy()
+
+    end
+
+end
+
+local function StopText()
+	if (text.x >= 512) then
+
+		movingText = false
+
+	end
+
+end
+
+local function MoveText()
+	if (movingText == true) then
+
+		text.x = text.x + scrollSpeedText
+		
+		StopText()
+
+	end
+
 end
 
 -- The function that will go to the main menu 
@@ -56,18 +113,31 @@ function scene:create( event )
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
 
-    -- set the background to be black
-    display.setDefault("background", 0, 0, 0)
+    -- insert the background
+    background = display.newImageRect("Images/Background.png", 1024, 768)
+    background.anchorX = 0
+    background.anchorY = 0
 
-    -- Insert the wizard image
-    wizard = display.newImageRect("Images/wizard.png", 400, 400)
+    -- insert the text image
+    text = display.newImageRect("Images/Cantin's Contests.png", 1614, 212)
+    text:scale(0.5, 0.5)
 
-    -- set the initial x and y position of the wizard
-    wizard.x = 100
-    wizard.y = display.contentHeight/2
+    -- set the initial x and y position of the trophy
+    text.x = 0
+    text.y = display.contentHeight/2
+
+    -- insert the trophy image
+    trophy = display.newImageRect("Images/Trophy.png", 382, 422)
+    trophy:scale(0.5, 0.5)
+
+    -- set the initial x and y position of the trophy
+    trophy.x = 100
+    trophy.y = display.contentHeight/2
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( wizard )
+    sceneGroup:insert( background )
+    sceneGroup:insert( trophy )
+    sceneGroup:insert( text )
 
 end -- function scene:create( event )
 
@@ -94,11 +164,14 @@ function scene:show( event )
         -- start the splash screen music
         splashScreenSoundChannel = audio.play(splashScreenSound)
 
-        -- Call the moveWizard function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", moveWizard)
+        -- Call the moveText function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", MoveText)
+
+        -- Call the MoveTrophy function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", MoveTrophy)
 
         -- Go to the main menu screen after the given time.
-        timer.performWithDelay ( 3000, gotoMainMenu)          
+        timer.performWithDelay (3000, gotoMainMenu)          
         
     end
 

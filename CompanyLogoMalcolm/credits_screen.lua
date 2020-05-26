@@ -3,7 +3,7 @@
 -- credits_screen.lua
 -- Created by: Malcolm Cantin
 -- Special thanks to Wal Wal for helping in the design of this framework.
--- Date: April 24, 2020
+-- Date: May 25, 2020
 -- Description: This is the credits page, displaying a back button to the main menu.
 -----------------------------------------------------------------------------------------
 
