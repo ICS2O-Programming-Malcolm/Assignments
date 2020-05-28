@@ -110,7 +110,7 @@ end
 
 -- This function stops the text animation
 local function StopText()
-	if (text.x >= 512) then
+	if (text.x <= 512) then
 
 		movingText = false
 
@@ -122,7 +122,7 @@ end
 local function AnimateText()
 	if (movingText == true) then
 
-        text.x = text.x + scrollSpeedText
+        text.x = text.x - scrollSpeedText
         
         text.alpha = text.alpha + 0.02
 		
@@ -182,7 +182,7 @@ function scene:create( event )
     text:scale(0.5, 0.5)
 
     -- set the initial x and y position of the trophy and make it invisible
-    text.x = 0
+    text.x = display.contentWidth
     text.y = display.contentHeight/2
     text.alpha = 0
 
