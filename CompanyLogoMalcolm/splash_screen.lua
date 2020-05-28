@@ -1,9 +1,8 @@
 -----------------------------------------------------------------------------------------
---
 -- splash_screen.lua
 -- Created by: Malcolm Cantin
 -- Date: May 25, 2020
--- Description: This is the splash screen of the game. It animates parts of my company 
+-- Description: This is the splash screen of the game. It animates the parts of my company 
 -- logo to come together on the screen.
 -----------------------------------------------------------------------------------------
 
@@ -25,20 +24,18 @@ local scene = composer.newScene( sceneName )
 -- The local variables for this scene
 local background
 
-local text
-local scrollSpeedText = 6
-local movingText = true
+local key
 
-local crown -- spin and grow / shrink in size
-local crownWidth = 963
-local crownHeight = 884
-
-local key -- zoom in?
+local crown
 
 local trophy
 local trophyScrollXSpeed = 8
 local trophyScrollYSpeed = -3
 local movingTrophy = true
+
+local text
+local scrollSpeedText = 6
+local movingText = true
 
 ----------------------------------------------------------------------------------------
 -- SOUNDS
@@ -51,7 +48,8 @@ local splashScreenSoundChannel
 -- LOCAL FUNCTIONS
 --------------------------------------------------------------------------------------------
 
-local function MoveKey()
+-- This function makes the key animate
+local function AnimateKey()
 
     key.width = key.width - 0.75
     key.height = key.height - 0.75
@@ -60,6 +58,7 @@ local function MoveKey()
 
 end
 
+-- This function will shirnk the crown
 local function ShrinkCrown()
 
     crown.width = crown.width - 10
@@ -67,8 +66,8 @@ local function ShrinkCrown()
 
 end
 
--- The function that animates the crown
-local function MoveCrown()
+-- This function makes the crown animate
+local function AnimateCrown()
 
     crown.width = crown.width + 5
     crown.height = crown.height + 5
@@ -79,6 +78,7 @@ local function MoveCrown()
 
 end
 
+-- This function stops the trophy animation
 local function StopTrophy()
 	if (trophy.x >= 768) and (trophy.y <= 192) then
 
@@ -93,8 +93,8 @@ local function StopTrophy()
 
 end
 
--- The function that moves the trophy across the screen
-local function MoveTrophy()
+-- This function makes the trophy animate
+local function AnimateTrophy()
     if (movingTrophy == true) then
 
         trophy.x = trophy.x + trophyScrollXSpeed
@@ -108,6 +108,7 @@ local function MoveTrophy()
 
 end
 
+-- This function stops the text animation
 local function StopText()
 	if (text.x >= 512) then
 
@@ -117,7 +118,8 @@ local function StopText()
 
 end
 
-local function MoveText()
+-- This function makes the text animate
+local function AnimateText()
 	if (movingText == true) then
 
         text.x = text.x + scrollSpeedText
@@ -151,7 +153,7 @@ function scene:create( event )
     background.anchorY = 0
 
     -- insert the crown image
-    crown = display.newImageRect("Images/Crown.png", crownWidth, crownHeight)
+    crown = display.newImageRect("Images/Crown.png", 963, 884)
     crown:scale(0.5, 0.5)
 
     -- set the initial x and y position of the crown
@@ -216,17 +218,17 @@ function scene:show( event )
         -- start the splash screen music
         splashScreenSoundChannel = audio.play(splashScreenSound)
 
-        -- Call the MoveKey function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", MoveKey)
+        -- Call the AnimateKey function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", AnimateKey)
 
-        -- Call the MoveCrown function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", MoveCrown)
+        -- Call the AnimateCrown function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", AnimateCrown)
 
-        -- Call the moveText function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", MoveText)
+        -- Call the AnimateTrophy function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", AnimateTrophy)
 
-        -- Call the MoveTrophy function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", MoveTrophy)
+        -- Call the AnimateText function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", AnimateText)
 
         -- Go to the main menu screen after the given time.
         timer.performWithDelay(3000, gotoMainMenu)          
