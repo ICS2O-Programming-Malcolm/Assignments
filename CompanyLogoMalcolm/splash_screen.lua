@@ -29,9 +29,11 @@ local text
 local scrollSpeedText = 6
 local movingText = true
 
-local crown
+local crown -- spin and grow / shrink in size
+local crownWidth = 963
+local crownHeight = 884
 
-local key
+local key -- zoom in?
 
 local trophy
 local trophyScrollXSpeed = 8
@@ -48,6 +50,34 @@ local splashScreenSoundChannel
 --------------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 --------------------------------------------------------------------------------------------
+
+local function MoveKey()
+
+    key.width = key.width - 0.75
+    key.height = key.height - 0.75
+    
+    key.alpha = key.alpha - 0.001
+
+end
+
+local function ShrinkCrown()
+
+    crown.width = crown.width - 10
+    crown.height = crown.height - 10
+
+end
+
+-- The function that animates the crown
+local function MoveCrown()
+
+    crown.width = crown.width + 5
+    crown.height = crown.height + 5
+
+    crown:rotate(-6)
+
+    timer.performWithDelay(1500, ShrinkCrown)
+
+end
 
 local function StopTrophy()
 	if (trophy.x >= 768) and (trophy.y <= 192) then
@@ -90,7 +120,9 @@ end
 local function MoveText()
 	if (movingText == true) then
 
-		text.x = text.x + scrollSpeedText
+        text.x = text.x + scrollSpeedText
+        
+        text.alpha = text.alpha + 0.02
 		
 		StopText()
 
@@ -118,13 +150,13 @@ function scene:create( event )
     background.anchorX = 0
     background.anchorY = 0
 
-    -- insert the text image
-    text = display.newImageRect("Images/Cantin's Contests.png", 1614, 212)
-    text:scale(0.5, 0.5)
+    -- insert the crown image
+    crown = display.newImageRect("Images/Crown.png", crownWidth, crownHeight)
+    crown:scale(0.5, 0.5)
 
-    -- set the initial x and y position of the trophy
-    text.x = 0
-    text.y = display.contentHeight/2
+    -- set the initial x and y position of the crown
+    crown.x = display.contentWidth/2
+    crown.y = display.contentHeight/2
 
     -- insert the trophy image
     trophy = display.newImageRect("Images/Trophy.png", 382, 422)
@@ -134,9 +166,29 @@ function scene:create( event )
     trophy.x = 100
     trophy.y = display.contentHeight/2
 
+    -- insert the key image
+    key = display.newImageRect("Images/Key.png", 282, 319)
+    key:scale(0.75, 0.75)
+
+    -- set the initial x and y position of the key and make it visible to start
+    key.x = display.contentWidth/5 - 30
+    key.y = display.contentHeight*4/5
+    key.alpha = 1
+
+    -- insert the text image
+    text = display.newImageRect("Images/Cantin's Contests.png", 1614, 212)
+    text:scale(0.5, 0.5)
+
+    -- set the initial x and y position of the trophy and make it invisible
+    text.x = 0
+    text.y = display.contentHeight/2
+    text.alpha = 0
+
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( background )
+    sceneGroup:insert( crown )
     sceneGroup:insert( trophy )
+    sceneGroup:insert( key )
     sceneGroup:insert( text )
 
 end -- function scene:create( event )
@@ -164,6 +216,12 @@ function scene:show( event )
         -- start the splash screen music
         splashScreenSoundChannel = audio.play(splashScreenSound)
 
+        -- Call the MoveKey function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", MoveKey)
+
+        -- Call the MoveCrown function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", MoveCrown)
+
         -- Call the moveText function as soon as we enter the frame.
         Runtime:addEventListener("enterFrame", MoveText)
 
@@ -171,7 +229,7 @@ function scene:show( event )
         Runtime:addEventListener("enterFrame", MoveTrophy)
 
         -- Go to the main menu screen after the given time.
-        timer.performWithDelay (3000, gotoMainMenu)          
+        timer.performWithDelay(3000, gotoMainMenu)          
         
     end
 
