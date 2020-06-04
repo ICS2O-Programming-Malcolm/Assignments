@@ -1,9 +1,8 @@
 -----------------------------------------------------------------------------------------
---
 -- splash_screen.lua
 -- Created by: Malcolm Cantin
 -- Date: May 25, 2020
--- Description: This is the splash screen of the game. It animates parts of my company 
+-- Description: This is the splash screen of the game. It animates the parts of my company 
 -- logo to come together on the screen.
 -----------------------------------------------------------------------------------------
 
@@ -25,18 +24,18 @@ local scene = composer.newScene( sceneName )
 -- The local variables for this scene
 local background
 
-local text
-local scrollSpeedText = 6
-local movingText = true
+local key
 
-local crown -- 
-
-local key -- zoom in?
+local crown
 
 local trophy
 local trophyScrollXSpeed = 8
 local trophyScrollYSpeed = -3
 local movingTrophy = true
+
+local text
+local scrollSpeedText = 6
+local movingText = true
 
 ----------------------------------------------------------------------------------------
 -- SOUNDS
@@ -49,6 +48,37 @@ local splashScreenSoundChannel
 -- LOCAL FUNCTIONS
 --------------------------------------------------------------------------------------------
 
+-- This function makes the key animate
+local function AnimateKey()
+
+    key.width = key.width - 0.75
+    key.height = key.height - 0.75
+    
+    key.alpha = key.alpha - 0.001
+
+end
+
+-- This function will shirnk the crown
+local function ShrinkCrown()
+
+    crown.width = crown.width - 10
+    crown.height = crown.height - 10
+
+end
+
+-- This function makes the crown animate
+local function AnimateCrown()
+
+    crown.width = crown.width + 5
+    crown.height = crown.height + 5
+
+    crown:rotate(-6)
+
+    timer.performWithDelay(1500, ShrinkCrown)
+
+end
+
+-- This function stops the trophy animation
 local function StopTrophy()
 	if (trophy.x >= 768) and (trophy.y <= 192) then
 
@@ -63,8 +93,8 @@ local function StopTrophy()
 
 end
 
--- The function that moves the trophy across the screen
-local function MoveTrophy()
+-- This function makes the trophy animate
+local function AnimateTrophy()
     if (movingTrophy == true) then
 
         trophy.x = trophy.x + trophyScrollXSpeed
@@ -78,8 +108,9 @@ local function MoveTrophy()
 
 end
 
+-- This function stops the text animation
 local function StopText()
-	if (text.x >= 512) then
+	if (text.x <= 512) then
 
 		movingText = false
 
@@ -87,10 +118,11 @@ local function StopText()
 
 end
 
-local function MoveText()
+-- This function makes the text animate
+local function AnimateText()
 	if (movingText == true) then
 
-        text.x = text.x + scrollSpeedText
+        text.x = text.x - scrollSpeedText
         
         text.alpha = text.alpha + 0.02
 		
@@ -120,6 +152,14 @@ function scene:create( event )
     background.anchorX = 0
     background.anchorY = 0
 
+    -- insert the crown image
+    crown = display.newImageRect("Images/Crown.png", 963, 884)
+    crown:scale(0.5, 0.5)
+
+    -- set the initial x and y position of the crown
+    crown.x = display.contentWidth/2
+    crown.y = display.contentHeight/2
+
     -- insert the trophy image
     trophy = display.newImageRect("Images/Trophy.png", 382, 422)
     trophy:scale(0.5, 0.5)
@@ -128,18 +168,29 @@ function scene:create( event )
     trophy.x = 100
     trophy.y = display.contentHeight/2
 
+    -- insert the key image
+    key = display.newImageRect("Images/Key.png", 282, 319)
+    key:scale(0.75, 0.75)
+
+    -- set the initial x and y position of the key and make it visible to start
+    key.x = display.contentWidth/5 - 30
+    key.y = display.contentHeight*4/5
+    key.alpha = 1
+
     -- insert the text image
     text = display.newImageRect("Images/Cantin's Contests.png", 1614, 212)
     text:scale(0.5, 0.5)
 
     -- set the initial x and y position of the trophy and make it invisible
-    text.x = 0
+    text.x = display.contentWidth
     text.y = display.contentHeight/2
     text.alpha = 0
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( background )
+    sceneGroup:insert( crown )
     sceneGroup:insert( trophy )
+    sceneGroup:insert( key )
     sceneGroup:insert( text )
 
 end -- function scene:create( event )
@@ -167,14 +218,20 @@ function scene:show( event )
         -- start the splash screen music
         splashScreenSoundChannel = audio.play(splashScreenSound)
 
-        -- Call the moveText function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", MoveText)
+        -- Call the AnimateKey function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", AnimateKey)
 
-        -- Call the MoveTrophy function as soon as we enter the frame.
-        Runtime:addEventListener("enterFrame", MoveTrophy)
+        -- Call the AnimateCrown function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", AnimateCrown)
+
+        -- Call the AnimateTrophy function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", AnimateTrophy)
+
+        -- Call the AnimateText function as soon as we enter the frame.
+        Runtime:addEventListener("enterFrame", AnimateText)
 
         -- Go to the main menu screen after the given time.
-        timer.performWithDelay (3000, gotoMainMenu)          
+        timer.performWithDelay(3000, gotoMainMenu)          
         
     end
 
