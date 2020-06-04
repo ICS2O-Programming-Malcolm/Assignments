@@ -29,6 +29,8 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 local bkg_image
 local backButton
 
+local missile
+
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -65,6 +67,16 @@ function scene:create( event )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
+
+    -- Inset the image of the missile
+    missile = display.newImage("Images/missile.png")
+    missile.x = display.contentWidth/2 + 110
+    missile.y = display.contentHeight*5/6 + 25
+    missile:scale(0.09375, 0.09375)
+    missile:rotate(-90)
+
+    -- Associating display objects with this scene 
+    sceneGroup:insert( missile )
 
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS

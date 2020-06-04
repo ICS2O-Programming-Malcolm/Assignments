@@ -37,6 +37,8 @@ local playButton
 local creditsButton
 local instructionsButton
 
+local jet
+
 -----------------------------------------------------------------------------------------
 -- LOCAL SOUNDS
 -----------------------------------------------------------------------------------------
@@ -48,6 +50,12 @@ local mainMenuMusicChannel
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 
+local function RotateJet()
+
+    jet:rotate(1)
+
+end
+
 -- Creating Transition Function to Credits Page
 local function CreditsTransition( )       
     composer.gotoScene( "credits_screen", {effect = "zoomOutInRotate", time = 1000})
@@ -57,13 +65,13 @@ end
 
 -- Creating Transition to Level1 Screen
 local function Level1ScreenTransition( )
-    composer.gotoScene( "level1_screen", {effect = "flip", time = 1000})
+    composer.gotoScene( "level1_screen", {effect = "flipFadeOutIn", time = 1000})
 end    
 
 -----------------------------------------------------------------------------------------
 
 local function InstructionsTransition( )
-    composer.gotoScene( "instructions_screen", {effect = "flipFadeOutIn", time = 1000})
+    composer.gotoScene( "instructions_screen", {effect = "zoomOutIn", time = 1000})
 end
 
 -----------------------------------------------------------------------------------------
@@ -93,6 +101,19 @@ function scene:create( event )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
+
+    -----------------------------------------------------------------------------------------
+    -- MOVING OBJECTS IN THE BACKGROUND
+    -----------------------------------------------------------------------------------------
+
+    -- Insert the image of the jet
+    jet = display.newImage("Images/jet.png")
+    jet.x = display.contentWidth/2
+    jet.y = display.contentHeight/2 + 50
+    jet:scale(0.125, 0.125)
+
+    -- Associating display objects with this scene 
+    sceneGroup:insert( jet )
 
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
@@ -194,6 +215,8 @@ function scene:show( event )
     -- Example: start timers, begin animation, play audio, etc.
     elseif ( phase == "did" ) then       
         
+        Runtime:addEventListener("enterFrame", RotateJet)
+
         mainMenuMusicChannel = audio.play(mainMenuMusic, {loops = -1})
 
     end

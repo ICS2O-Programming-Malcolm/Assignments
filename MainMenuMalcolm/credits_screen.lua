@@ -29,6 +29,8 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 local bkg_image
 local backButton
 
+local macCrest
+
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -65,6 +67,15 @@ function scene:create( event )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
+
+    -- Inset the image of the Immaculata Crest
+    macCrest = display.newImage("Images/macCrest.png")
+    macCrest.x = display.contentWidth/2
+    macCrest.y = display.contentHeight*5/6
+    macCrest:scale(0.5, 0.5)
+
+    -- Associating display objects with this scene 
+    sceneGroup:insert( macCrest )
 
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
