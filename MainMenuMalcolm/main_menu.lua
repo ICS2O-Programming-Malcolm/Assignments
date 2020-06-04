@@ -43,7 +43,7 @@ local jet
 -- LOCAL SOUNDS
 -----------------------------------------------------------------------------------------
 
-local mainMenuMusic = audio.loadSound("Sounds/mainMenuMusic.wav")
+local mainMenuMusic = audio.loadSound("Sounds/mainMenuMusic.mp3")
 local mainMenuMusicChannel
 
 -----------------------------------------------------------------------------------------
