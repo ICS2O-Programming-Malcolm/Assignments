@@ -26,9 +26,12 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
+
+-- Variables for the background image and back button
 local bkg_image
 local backButton
 
+-- Variable for the MAC crest
 local macCrest
 
 -----------------------------------------------------------------------------------------
@@ -140,6 +143,8 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
 
+        -- If the sound has not been muted, then play the credits audio, otherwise pause the
+        -- music
         if (soundOn == true) then
 
             -- play the credits music
@@ -175,8 +180,10 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
 
+        -- If the sound has not been muted, stop the audio
         if (soundOn == true) then
 
+            -- Stop the credits music
             audio.stop(creditsMusicChannel)
 
         end

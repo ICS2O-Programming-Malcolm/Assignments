@@ -26,9 +26,12 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
+
+-- Variables for the background image and back button
 local bkg_image
 local backButton
 
+-- Variable for the missile
 local missile
 
 -----------------------------------------------------------------------------------------
@@ -141,6 +144,8 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
 
+        -- If the sound has not been muted, play the instructions audio, otherwise
+        -- pause the audio
         if (soundOn == true) then
 
             -- play the background music
@@ -176,8 +181,10 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
 
+        -- If the sound has not been muted, stop the audio
         if (soundOn == true) then
 
+            -- stop the audio
             audio.stop(instructionsMusicChannel)
 
         end
