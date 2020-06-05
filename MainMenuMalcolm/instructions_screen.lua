@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------------------------
---
 -- instructions_screen.lua
 -- Created by: Malcolm Cantin
 -- Special thanks to Wal Wal for helping in the design of this framework.
