@@ -1,9 +1,10 @@
 -----------------------------------------------------------------------------------------
---
 -- main_menu.lua
 -- Created by: Malcolm Cantin
--- Date: May 25, 2020
--- Description: This is the main menu, displaying the credits, instructions & play buttons.
+-- Date: June 4, 2020
+-- Description: This is the main menu, that includes a credits screen, instructions 
+-- screen, and a level 1 screen with buttons to each and back buttons from the 
+-- credits/instructions screens.
 -----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
@@ -29,24 +30,105 @@ sceneName = "main_menu"
 local scene = composer.newScene( sceneName )
 
 -----------------------------------------------------------------------------------------
+-- GLOBAL VARIABLES
+-----------------------------------------------------------------------------------------
+
+-- Create the global variable to check whether or not the user wants to play the music
+soundOn = true
+
+-----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
 
+-- Variable for the background image
 local bkg_image
+
+-- Variables for the buttons
 local playButton
 local creditsButton
 local instructionsButton
+
+-- Variable for the jet
+local jet
+
+-- Vriables for the mute/unmute buttons
+local muteButton
+local unmuteButton
 
 -----------------------------------------------------------------------------------------
 -- LOCAL SOUNDS
 -----------------------------------------------------------------------------------------
 
-local mainMenuMusic = audio.loadSound("Sounds/mainMenuMusic.wav")
+-- Load the main menu audio
+local mainMenuMusic = audio.loadSound("Sounds/mainMenuMusic.mp3")
 local mainMenuMusicChannel
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
+
+-- This function will mute all sounds
+local function Mute(touch)
+
+    if (touch.phase == "ended") then
+
+        -- pause all sounds
+        audio.pause(bgSoundL1Channel)
+
+        -- make soundOn false
+        soundOn = false
+
+        -- make mute button visible
+        muteButton.isVisible = true
+        unmuteButton.isVisible = false
+
+    end
+
+end
+
+-- This function will unmute all sounds
+local function Unmute(touch)
+
+    if (touch.phase == "ended") then
+
+        -- resume all sounds
+        audio.resume(bgSoundL1Channel)
+
+        -- make soundOn true
+        soundOn = true
+
+        -- make unmute button visible
+        muteButton.isVisible = false
+        unmuteButton.isVisible = true
+
+    end
+
+end
+
+-- Add mute/unmute button listeners
+local function AddMuteUnmuteListeners()
+
+    unmuteButton:addEventListener("touch", Mute)
+
+    muteButton:addEventListener("touch", Unmute)
+
+end
+
+-- REmove mute/unmute button listeners
+local function RemoveMuteUnmuteListeners()
+
+    unmuteButton:removeEventListener("touch", Mute)
+
+    muteButton:removeEventListener("touch", Unmute)
+
+end
+
+-- This function rotates the jet
+local function RotateJet()
+
+    jet:rotate(1)
+
+end
 
 -- Creating Transition Function to Credits Page
 local function CreditsTransition( )       
@@ -57,13 +139,13 @@ end
 
 -- Creating Transition to Level1 Screen
 local function Level1ScreenTransition( )
-    composer.gotoScene( "level1_screen", {effect = "flip", time = 1000})
+    composer.gotoScene( "level1_screen", {effect = "flipFadeOutIn", time = 1000})
 end    
 
 -----------------------------------------------------------------------------------------
 
 local function InstructionsTransition( )
-    composer.gotoScene( "instructions_screen", {effect = "flipFadeOutIn", time = 1000})
+    composer.gotoScene( "instructions_screen", {effect = "zoomOutIn", time = 1000})
 end
 
 -----------------------------------------------------------------------------------------
@@ -93,6 +175,37 @@ function scene:create( event )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
+
+    -- mute button 
+    muteButton = display.newImageRect ("Images/mute.png", 70, 70)
+    muteButton.x = 950
+    muteButton.y = 60
+    muteButton.isVisible = false
+
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( muteButton )
+
+    -- mute button 
+    unmuteButton = display.newImageRect ("Images/unmute.png", 70, 70)
+    unmuteButton.x = 950
+    unmuteButton.y = 60
+    unmuteButton.isVisible = true
+    
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( unmuteButton )
+
+    -----------------------------------------------------------------------------------------
+    -- MOVING OBJECTS IN THE BACKGROUND
+    -----------------------------------------------------------------------------------------
+
+    -- Insert the image of the jet
+    jet = display.newImage("Images/jet.png")
+    jet.x = display.contentWidth/2
+    jet.y = display.contentHeight/2 + 50
+    jet:scale(0.125, 0.125)
+
+    -- Associating display objects with this scene 
+    sceneGroup:insert( jet )
 
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
@@ -194,7 +307,22 @@ function scene:show( event )
     -- Example: start timers, begin animation, play audio, etc.
     elseif ( phase == "did" ) then       
         
-        mainMenuMusicChannel = audio.play(mainMenuMusic, {loops = -1})
+        Runtime:addEventListener("enterFrame", RotateJet)
+
+        if (soundOn == true) then
+            -- play the background music
+            mainMenuMusicChannel = audio.play(mainMenuMusic, {loops = -1})
+            muteButton.isVisible = false
+            unmuteButton.isVisible = true
+        else
+            -- pause the background music
+            audio.pause(mainMenuMusic)
+            muteButton.isVisible = true
+            unmuteButton.isVisible = false
+        end
+
+        -- add the mute and unmute functionality to the buttons
+        AddMuteUnmuteListeners()
 
     end
 
@@ -225,6 +353,9 @@ function scene:hide( event )
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
+
+        -- Remove the mute/unmute listeners
+        RemoveMuteUnmuteListeners()
 
         
     end

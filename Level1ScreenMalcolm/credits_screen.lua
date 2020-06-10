@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------------------------
---
 -- credits_screen.lua
 -- Created by: Malcolm Cantin
 -- Special thanks to Wal Wal for helping in the design of this framework.
@@ -26,8 +25,21 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
+
+-- Variables for the background image and back button
 local bkg_image
 local backButton
+
+-- Variable for the MAC crest
+local macCrest
+
+-----------------------------------------------------------------------------------------
+-- LOCAL SOUNDS
+-----------------------------------------------------------------------------------------
+
+-- Load the credits screen audio
+local creditsMusic = audio.loadSound("Sounds/creditsMusic.mp3")
+local creditsMusicChannel
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -65,6 +77,15 @@ function scene:create( event )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
+
+    -- Inset the image of the Immaculata Crest
+    macCrest = display.newImage("Images/macCrest.png")
+    macCrest.x = display.contentWidth/2
+    macCrest.y = display.contentHeight*5/6
+    macCrest:scale(0.5, 0.5)
+
+    -- Associating display objects with this scene 
+    sceneGroup:insert( macCrest )
 
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
@@ -120,6 +141,21 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
+
+        -- If the sound has not been muted, then play the credits audio, otherwise pause the
+        -- music
+        if (soundOn == true) then
+
+            -- play the credits music
+            creditsMusicChannel = audio.play(creditsMusic, {loops = -1})
+
+        else
+
+            -- pause the credits music
+            audio.pause(creditsMusic)
+
+        end
+
     end
 
 end -- function scene:show( event )
@@ -142,6 +178,14 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
+
+        -- If the sound has not been muted, stop the audio
+        if (soundOn == true) then
+
+            -- Stop the credits music
+            audio.stop(creditsMusicChannel)
+
+        end
 
     -----------------------------------------------------------------------------------------
 

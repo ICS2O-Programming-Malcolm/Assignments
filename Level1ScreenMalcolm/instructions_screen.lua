@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------------------------
---
 -- instructions_screen.lua
 -- Created by: Malcolm Cantin
 -- Special thanks to Wal Wal for helping in the design of this framework.
@@ -26,8 +25,21 @@ scene = composer.newScene( sceneName ) -- This function doesn't accept a string,
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
+
+-- Variables for the background image and back button
 local bkg_image
 local backButton
+
+-- Variable for the missile
+local missile
+
+-----------------------------------------------------------------------------------------
+-- LOCAL SOUNDS
+-----------------------------------------------------------------------------------------
+
+-- Load the main menu audio
+local instructionsMusic = audio.loadSound("Sounds/instructionsMusic.mp3")
+local instructionsMusicChannel
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -65,6 +77,16 @@ function scene:create( event )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
+
+    -- Inset the image of the missile
+    missile = display.newImage("Images/missile.png")
+    missile.x = display.contentWidth/2 + 110
+    missile.y = display.contentHeight*5/6 + 25
+    missile:scale(0.09375, 0.09375)
+    missile:rotate(-90)
+
+    -- Associating display objects with this scene 
+    sceneGroup:insert( missile )
 
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
@@ -120,6 +142,21 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
+
+        -- If the sound has not been muted, play the instructions audio, otherwise
+        -- pause the audio
+        if (soundOn == true) then
+
+            -- play the background music
+            instructionsMusicChannel = audio.play(instructionsMusic, {loops = -1})
+
+        else
+
+            -- pause the background music
+            audio.pause(instructionsMusic)
+
+        end
+
     end
 
 end -- function scene:show( event )
@@ -142,6 +179,14 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
+
+        -- If the sound has not been muted, stop the audio
+        if (soundOn == true) then
+
+            -- stop the audio
+            audio.stop(instructionsMusicChannel)
+
+        end
 
     -----------------------------------------------------------------------------------------
 
