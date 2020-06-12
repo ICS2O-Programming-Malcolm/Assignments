@@ -1,122 +1,88 @@
 -----------------------------------------------------------------------------------------
--- instructions_screen.lua
--- Created by: Malcolm Cantin
--- Special thanks to Wal Wal for helping in the design of this framework.
+-- SceneTemplate.lua
+-- Scene Template (Composer API)
+--
+-- Edited by: Malcolm Cantin
+-- Editied on: Apr. 28th, 2020
 -- Course: ICS2O Programming
--- Date: May 25, 2020
--- Description: This is the instructions page, displaying a back button to the main menu.
 -----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
 -- INITIALIZATIONS
 -----------------------------------------------------------------------------------------
 
--- Use Composer Libraries
+-- Calling Composer Library
 local composer = require( "composer" )
+
 local widget = require( "widget" )
 
 -----------------------------------------------------------------------------------------
 
 -- Naming Scene
-sceneName = "instructions_screen"
+sceneName = "you_win"
+
+-----------------------------------------------------------------------------------------
 
 -- Creating Scene Object
-scene = composer.newScene( sceneName ) -- This function doesn't accept a string, only a variable containing a string
+local scene = composer.newScene( sceneName )
 
 -----------------------------------------------------------------------------------------
--- LOCAL VARIABLES
+-- FORWARD REFERENCES
 -----------------------------------------------------------------------------------------
 
--- Variables for the background image and back button
-local bkg_image
-local backButton
+-- local variables for the scene
+local bkg
 
--- Variable for the missile
-local missile
+----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
--- LOCAL SOUNDS
+-- SOUNDS
 -----------------------------------------------------------------------------------------
 
--- Load the main menu audio
-local instructionsMusic = audio.loadSound("Sounds/instructionsMusic.mp3")
-local instructionsMusicChannel
+-- add lose sound effect
+local winSound = audio.loadSound("Sounds/win.mp3")
+local winSoundChannel
 
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 
--- Creating Transitioning Function back to main menu
-local function BackTransition( )
-    composer.gotoScene( "main_menu", {effect = "slideDown", time = 1000})
+-- This function returns to the main menu
+local function ReturnToMenu()
+
+    composer.gotoScene("main_menu")
+
 end
 
+-- This function waits 3 seconds before calling ReturnToMenu
+local function ReturnTimer()
 
------------------------------------------------------------------------------------------
--- GLOBAL SCENE FUNCTIONS
------------------------------------------------------------------------------------------
+    timer.performWithDelay(3000, ReturnToMenu)
 
+end
+
+--------------------------------------------------------------------------------------
 -- The function called when the screen doesn't exist
 function scene:create( event )
 
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
 
-    -----------------------------------------------------------------------------------------
-    -- BACKGROUND AND DISPLAY OBJECTS
-    -----------------------------------------------------------------------------------------
-
-    -- Insert the background image and set it to the center of the screen
-    bkg_image = display.newImageRect("Images/Instructions Screen.png", display.contentWidth, display.contentHeight)
-    bkg_image.x = display.contentCenterX
-    bkg_image.y = display.contentCenterY
-    bkg_image.width = display.contentWidth
-    bkg_image.height = display.contentHeight
-
+    -- Display background
+    bkg = display.newImage("Images/YouWin.png")
+    bkg.x = display.contentCenterX
+    bkg.y = display.contentCenterY
+    bkg.width = display.contentWidth
+    bkg.height = display.contentHeight
+   
     -- Associating display objects with this scene 
-    sceneGroup:insert( bkg_image )
+    sceneGroup:insert( bkg )
+  
+end    
 
-    -- Send the background image to the back layer so all other objects can be on top
-    bkg_image:toBack()
-
-    -- Inset the image of the missile
-    missile = display.newImage("Images/missileInstructions.png")
-    missile.x = display.contentWidth/2 + 110
-    missile.y = display.contentHeight*5/6 + 25
-
-    -- Associating display objects with this scene 
-    sceneGroup:insert( missile )
-
-    -----------------------------------------------------------------------------------------
-    -- BUTTON WIDGETS
-    -----------------------------------------------------------------------------------------
-
-    -- Creating Back Button
-    backButton = widget.newButton( 
-    {
-        -- Setting Position
-        x = display.contentWidth*1/8,
-        y = display.contentHeight*15/16,
-
-        -- Setting Dimensions
-        width = 175,
-        height = 75,
-
-        -- Setting Visual Properties
-        defaultFile = "Images/Back Button Unpressed.png",
-        overFile = "Images/Back Button Pressed.png",
-
-        -- Setting Functional Properties
-        onRelease = BackTransition
-
-    } )
-
-    -----------------------------------------------------------------------------------------
-
-    -- Associating Buttons with this scene
-    sceneGroup:insert( backButton )
-    
-end --function scene:create( event )
+-----------------------------------------------------------------------------------------
+-- GLOBAL SCENE FUNCTIONS
+-----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
 
@@ -138,27 +104,22 @@ function scene:show( event )
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
+
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
 
-        -- If the sound has not been muted, play the instructions audio, otherwise
-        -- pause the audio
+        -- Start the 3 wait to return to the main menu
+        ReturnTimer()
+
         if (soundOn == true) then
-
-            -- play the background music
-            instructionsMusicChannel = audio.play(instructionsMusic, {loops = -1})
-
-        else
-
-            -- pause the background music
-            audio.pause(instructionsMusic)
-
+            -- play win sound effect
+            -- winSoundChannel = audio.play(winSound)
         end
 
     end
 
-end -- function scene:show( event )
+end
 
 -----------------------------------------------------------------------------------------
 
@@ -179,21 +140,13 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
 
-        -- If the sound has not been muted, stop the audio
-        if (soundOn == true) then
-
-            -- stop the audio
-            audio.stop(instructionsMusicChannel)
-
-        end
-
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
     end
 
-end --function scene:hide( event )
+end
 
 -----------------------------------------------------------------------------------------
 
@@ -209,8 +162,7 @@ function scene:destroy( event )
     -- Called prior to the removal of scene's view ("sceneGroup").
     -- Insert code here to clean up the scene.
     -- Example: remove display objects, save state, etc.
-
-end --function scene:destroy( event )
+end
 
 -----------------------------------------------------------------------------------------
 -- EVENT LISTENERS
@@ -225,5 +177,3 @@ scene:addEventListener( "destroy", scene )
 -----------------------------------------------------------------------------------------
 
 return scene
-
-

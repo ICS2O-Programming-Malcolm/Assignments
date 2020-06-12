@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------------------------
 -- main_menu.lua
 -- Created by: Malcolm Cantin
--- Date: June 4, 2020
+-- Course: ICS2O Programming
+-- Date: June 10, 2020
 -- Description: This is the main menu, that includes a credits screen, instructions 
 -- screen, and a level 1 screen with buttons to each and back buttons from the 
 -- credits/instructions screens.
@@ -199,7 +200,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the image of the jet
-    jet = display.newImage("Images/jet.png")
+    jet = display.newImage("Images/jetMainMenu.png")
     jet.x = display.contentWidth/2
     jet.y = display.contentHeight/2 + 50
     jet:scale(0.125, 0.125)
@@ -347,6 +348,8 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
         
+        Runtime:removeEventListener("enterFrame", RotateJet)
+
         audio.stop(mainMenuMusicChannel)
 
     -----------------------------------------------------------------------------------------
