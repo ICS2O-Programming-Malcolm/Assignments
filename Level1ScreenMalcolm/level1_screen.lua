@@ -182,6 +182,12 @@ local function ReplaceJet()
     AddRuntimeListeners()
 end
 
+local function MakeMissilesVisible()
+    missile1.isVisible = true
+    missile2.isVisible = true
+    missile3.isVisible = true
+end
+
 -- This function check if the jet has collided with any of the things in the scene
 local function onCollision(self, event)
 
@@ -513,6 +519,9 @@ function scene:show( event )
 
         -- create the jet, add physics bodies and runtime listeners
         ReplaceJet()
+
+        -- make missiles visible
+        MakeMissilesVisible()
 
         -- add physics bodies to each object
         AddPhysicsBodies()
