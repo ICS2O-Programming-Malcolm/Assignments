@@ -182,13 +182,6 @@ local function ReplaceJet()
     AddRuntimeListeners()
 end
 
--- This function will remove the physics body of the missile after answering a question
-local function removeMissilePhysicsBody()
-
-    physics.removeBody(theMissile)
-
-end
-
 -- This function check if the jet has collided with any of the things in the scene
 local function onCollision(self, event)
 
@@ -206,15 +199,6 @@ local function onCollision(self, event)
 
             -- store the event.target in the variable theMissile
             theMissile = event.target
-
-            -- make the missile invisible
-            event.target.isVisible = false
-
-            -- remove the physics body of the image
-            timer.performWithDelay(1000, removeMissilePhysicsBody)
-
-            -- remove the collision event listener
-            event.target:removeEventListener( "collision" )
 
             -- set gravity
             physics.setGravity(0, 0)
@@ -350,13 +334,20 @@ end
 -----------------------------------------------------------------------------------------
 
 -- This function will resume the game
-function ResumeGame()
+function ResumeGame() 
 
     -- make jet visible again
     jet.isVisible = true
 
     -- set gravity
-    physics.setGravity(0, GRAVITY)
+    physics.setGravity(0, GRAVITY)  
+    
+    if (questionsAnswered > 0) then
+        if (theMissile ~= nil) and (theMissile.isBodyActive == true) then
+            theMissile.isVisible = false
+            physics.removeBody(theMissile)
+        end
+    end
 
 end
 
