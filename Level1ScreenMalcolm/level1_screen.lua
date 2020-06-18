@@ -216,8 +216,8 @@ local function onCollision(self, event)
             -- store the event.target in the variable theMissile
             theMissile = event.target
 
-            -- set gravity
-            physics.setGravity(0, 0)
+            -- remove the physics body
+            physics.removeBody(jet)
 
             -- show overlay with math question
             composer.showOverlay( "level1_question", { isModal = true, effect = "crossFade", time = 100})
@@ -363,10 +363,13 @@ end
 local function PauseScreenTransition()
 
     -- make the jet invisible
-    jet.isVisible = false
+    jet.isVisible = false 
 
-    -- set gravity
-    physics.setGravity(0, 0) 
+    -- remove physics body
+    physics.removeBody(jet)
+
+    -- pause the timer
+    timer.pause(countDownTimer)
 
     -- show pause screen overlay
     composer.showOverlay("pause_screen", { isModal = true, effect = "crossFade", time = 100})
@@ -389,13 +392,13 @@ end
 -----------------------------------------------------------------------------------------
 
 -- This function will resume the game
-function ResumeGame() 
+function ResumeGameFromQuestion() 
 
     -- make jet visible again
     jet.isVisible = true
 
-    -- set gravity
-    physics.setGravity(0, GRAVITY)  
+    -- add physics body
+    physics.addBody( jet, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
     
     if (questionsAnswered > 0) then
         if (theMissile ~= nil) and (theMissile.isBodyActive == true) then
@@ -403,6 +406,19 @@ function ResumeGame()
             physics.removeBody(theMissile)
         end
     end
+
+end
+
+-- This function will resume the game
+function ResumeGameFromPause() 
+
+    -- make jet visible again
+    jet.isVisible = true
+
+    -- add physics body
+    physics.addBody( jet, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
+
+    timer.resume(countDownTimer)
 
 end
 

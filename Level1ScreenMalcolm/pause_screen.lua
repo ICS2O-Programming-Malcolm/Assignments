@@ -63,7 +63,7 @@ local mainMenuButton
 local function BackToLevel1() 
     composer.hideOverlay("crossFade", 600 )
   
-    ResumeGame()
+    ResumeGameFromPause()
     
 end
 
@@ -187,8 +187,8 @@ function scene:create( event )
             height = 100,
 
             -- Insert the images here
-            defaultFile = "Images/Main Menu Button Unpressed.png",
-            overFile = "Images/Main Menu Button Pressed.png",
+            defaultFile = "Images/Resume Button Unpressed.png",
+            overFile = "Images/Resume Button Pressed.png",
 
             -- When the button is released, call the Level1 screen transition function
             onRelease = BackToLevel1          
