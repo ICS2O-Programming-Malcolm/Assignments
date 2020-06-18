@@ -74,7 +74,7 @@ local function Mute(touch)
     if (touch.phase == "ended") then
 
         -- pause all sounds
-        audio.pause(bgSoundL1Channel)
+        audio.pause(mainMenuMusicChannel)
 
         -- make soundOn false
         soundOn = false
@@ -93,7 +93,7 @@ local function Unmute(touch)
     if (touch.phase == "ended") then
 
         -- resume all sounds
-        audio.resume(bgSoundL1Channel)
+        audio.resume(mainMenuMusicChannel)
 
         -- make soundOn true
         soundOn = true
@@ -115,7 +115,7 @@ local function AddMuteUnmuteListeners()
 
 end
 
--- REmove mute/unmute button listeners
+-- Remove mute/unmute button listeners
 local function RemoveMuteUnmuteListeners()
 
     unmuteButton:removeEventListener("touch", Mute)
@@ -186,7 +186,7 @@ function scene:create( event )
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( muteButton )
 
-    -- mute button 
+    -- unmute button 
     unmuteButton = display.newImageRect ("Images/unmute.png", 70, 70)
     unmuteButton.x = 950
     unmuteButton.y = 60

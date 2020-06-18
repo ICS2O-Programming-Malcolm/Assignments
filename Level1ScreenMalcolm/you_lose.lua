@@ -33,6 +33,8 @@ local scene = composer.newScene( sceneName )
 -- local variables for the scene
 local bkg
 
+local mainMenuButton
+
 ----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
@@ -54,13 +56,6 @@ local function ReturnToMenu()
 
 end
 
--- This function waits 3 seconds before calling ReturnToMenu
-local function ReturnTimer()
-
-    timer.performWithDelay(3000, ReturnToMenu)
-
-end
-
 --------------------------------------------------------------------------------------
 -- The function called when the screen doesn't exist
 function scene:create( event )
@@ -77,6 +72,33 @@ function scene:create( event )
    
     -- Associating display objects with this scene 
     sceneGroup:insert( bkg )
+
+    -----------------------------------------------------------------------------------------
+    -- BUTTON WIDGETS
+    -----------------------------------------------------------------------------------------   
+
+    -- Creating Main Menu Button
+    mainMenuButton = widget.newButton( 
+        {   
+            -- Set its position on the screen relative to the screen size
+            x = display.contentWidth/2,
+            y = display.contentHeight - 95,
+
+            width = 200,
+            height = 100,
+
+            -- Insert the images here
+            defaultFile = "Images/Main Menu Button Unpressed.png",
+            overFile = "Images/Main Menu Button Pressed.png",
+
+            -- When the button is released, call the Level1 screen transition function
+            onRelease = ReturnToMenu          
+        } )
+
+    -----------------------------------------------------------------------------------------
+
+    -- Associating button widgets with this scene
+    sceneGroup:insert( mainMenuButton )
   
 end    
 
@@ -109,12 +131,11 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
 
-        -- Start the 3 wait to return to the main menu
-        ReturnTimer()
-
         if (soundOn == true) then
+
             -- play lose sound effect
-            -- loseSoundChannel = audio.play(loseSound)
+            loseSoundChannel = audio.play(loseSound)
+            
         end
 
     end
@@ -139,6 +160,13 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
+
+        if (soundOn == true) then
+
+            -- stop lose sound effect
+            audio.stop(loseSoundChannel)
+            
+        end
 
     -----------------------------------------------------------------------------------------
 

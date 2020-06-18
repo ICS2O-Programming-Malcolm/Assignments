@@ -85,6 +85,16 @@ local floor
 -- Variable to check the number of questions answered
 local questionsAnswered = 0
 
+-- Variable for the pause button
+local pauseButton
+
+-----------------------------------------------------------------------------------------
+-- SOUNDS
+-----------------------------------------------------------------------------------------
+
+local level1Music = audio.loadSound("Sounds/level1Music.mp3")
+local level1MusicChannel
+
 -----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -283,14 +293,33 @@ end
 -- This function will remove all the physics bodies
 local function RemovePhysicsBodies()
 
-    physics.removeBody(missile1)
-    physics.removeBody(missile2)
-    physics.removeBody(missile3)
-
     physics.removeBody(leftW)
     physics.removeBody(rightW)
     physics.removeBody(topW)
     physics.removeBody(floor)
+
+end
+
+-- This function will remove missile bodies if they still exist on the screen
+local function RemoveMissilePhysicsBodies()
+
+    if (missile1.isBodyActive == true) then
+
+        physics.removeBody(missile1)
+
+    end
+
+    if (missile2.isBodyActive == true) then
+
+        physics.removeBody(missile2)
+
+    end
+
+    if (missile3.isBodyActive == true) then
+
+        physics.removeBody(missile3)
+
+    end
 
 end
 
@@ -319,9 +348,29 @@ end
 -- This function calls the timer
 local function StartTimer()
 
+    -- initialize timer
+    secondsLeft = TOTAL_SECONDS
+
+    -- maker timer visible
+    clockText.isVisible = true
+
 	-- create a countdown timer that loops infinitely
     countDownTimer = timer.performWithDelay(1000, UpdateTime, 0)
         
+end
+
+-- This is the transition to the pause menu
+local function PauseScreenTransition()
+
+    -- make the jet invisible
+    jet.isVisible = false
+
+    -- set gravity
+    physics.setGravity(0, 0) 
+
+    -- show pause screen overlay
+    composer.showOverlay("pause_screen", { isModal = true, effect = "crossFade", time = 100})
+
 end
 
 -- This function is meant to allow the use of arrow keys but is not in use at the moment
@@ -401,7 +450,7 @@ function scene:create( event )
 
     -- Insert the image of missile #1
     missile1 = display.newImage("Images/missile.png")
-    missile1.x = display.contentWidth*2/3
+    missile1.x = display.contentWidth*2/3 - 70
     missile1.y = 80
     missile1.isVisible = true
     missile1.myName = "missile1"
@@ -481,6 +530,33 @@ function scene:create( event )
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( floor )
 
+    -----------------------------------------------------------------------------------------
+    -- BUTTON WIDGETS
+    -----------------------------------------------------------------------------------------   
+
+    -- Creating Pause Button
+    pauseButton = widget.newButton( 
+        {   
+            -- Set its position on the screen relative to the screen size
+            x = 950,
+            y = 60,
+
+            width = 70,
+            height = 70,
+
+            -- Insert the images here
+            defaultFile = "Images/Pause Button Unpressed.png",
+            overFile = "Images/Pause Button Pressed.png",
+
+            -- When the button is released, call the Level1 screen transition function
+            onRelease = PauseScreenTransition          
+        } )
+
+    -----------------------------------------------------------------------------------------
+
+    -- Associating button widgets with this scene
+    sceneGroup:insert( pauseButton )
+
 end --function scene:create( event )
 
 -----------------------------------------------------------------------------------------
@@ -513,6 +589,14 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
+
+        -- If the sound has not been muted, play the level 1 music
+        if (soundOn == true) then
+
+            -- play level 1 music
+            level1MusicChannel = audio.play(level1Music)
+            
+        end
 
         -- Initialize questionsAnswered to 0
         questionsAnswered = 0
@@ -551,6 +635,14 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
 
+        -- If the sound has not been muted, stop the audio
+        if (soundOn == true) then
+
+            -- stop level 1 music
+            audio.stop(level1MusicChannel)
+            
+        end
+
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
@@ -558,11 +650,16 @@ function scene:hide( event )
 
         -- Remove collision and physics functionality
         RemoveCollisionListeners()
+
         RemovePhysicsBodies()
+
+        RemoveMissilePhysicsBodies()
+
         physics.stop()
 
         -- remove runtime listeners that move the jet
         RemoveArrowEventListeners()
+
         RemoveRuntimeListeners()
 
         -- remove jet
