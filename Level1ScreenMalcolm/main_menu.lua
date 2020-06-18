@@ -106,6 +106,7 @@ local function Unmute(touch)
 
 end
 
+
 -- Add mute/unmute button listeners
 local function AddMuteUnmuteListeners()
 

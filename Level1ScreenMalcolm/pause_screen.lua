@@ -40,9 +40,6 @@ local bkg
 local cover
 
 local resumeButton
-local muteButton
-local unmuteButton
-
 local mainMenuButton
 
 -----------------------------------------------------------------------------------------
@@ -77,14 +74,22 @@ end
 -- This function will mute all sounds
 local function Mute(touch)
 
-    if (touch.phase == "ended") then
+    if (soundOn == true) then
 
-        -- make soundOn false
-        soundOn = false
+        muteButton.isVisible = false
 
-        -- make mute button visible
-        muteButton.isVisible = true
-        unmuteButton.isVisible = false
+        unmuteButton.isVisible = true
+
+        if (touch.phase == "ended") then
+
+            -- make soundOn false
+            soundOn = false
+
+            -- make mute button visible
+            muteButton.isVisible = true
+            unmuteButton.isVisible = false
+
+        end
 
     end
 
@@ -93,14 +98,22 @@ end
 -- This function will unmute all sounds
 local function Unmute(touch)
 
-    if (touch.phase == "ended") then
+    if (soundOn == false) then
 
-        -- make soundOn true
-        soundOn = true
+        muteButton.isVisible = true
 
-        -- make unmute button visible
-        muteButton.isVisible = false
-        unmuteButton.isVisible = true
+        unmuteButton.isVisible = false
+
+        if (touch.phase == "ended") then
+
+            -- make soundOn false
+            soundOn = true
+
+            -- make mute button visible
+            muteButton.isVisible = false
+            unmuteButton.isVisible = true
+
+        end
 
     end
 
@@ -148,20 +161,18 @@ function scene:create( event )
 
     -- create the question text object
     questionText = display.newText("", display.contentCenterX, display.contentCenterY*3/8, Arial, 75)
-    
+
     -- mute button 
-    muteButton = display.newImageRect ("Images/mute.png", 70, 70)
+    muteButton = display.newImageRect("Images/mute.png", 70, 70)
     muteButton:scale(2, 2)
     muteButton.x = display.contentCenterX
     muteButton.y = display.contentCenterY
-    muteButton.isVisible = false
-
+        
     -- unmute button 
-    unmuteButton = display.newImageRect ("Images/unmute.png", 70, 70)
+    unmuteButton = display.newImageRect("Images/unmute.png", 70, 70)
     unmuteButton:scale(2, 2)
     unmuteButton.x = display.contentCenterX
     unmuteButton.y = display.contentCenterY
-    unmuteButton.isVisible = true
 
     -----------------------------------------------------------------------------------------
 
@@ -181,7 +192,7 @@ function scene:create( event )
         {   
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = 250,
+            y = 170,
 
             width = 200,
             height = 100,
@@ -199,7 +210,7 @@ function scene:create( event )
         {   
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = display.contentHeight - 120,
+            y = display.contentHeight - 160,
 
             width = 200,
             height = 100,

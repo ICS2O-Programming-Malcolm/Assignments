@@ -33,15 +33,10 @@ local scene = composer.newScene( sceneName )
 -----------------------------------------------------------------------------------------
 
 -- The local variables for this scene
+
+local randomQuestionNum
+
 local questionText
-
-local firstNumber
-local secondNumber
-
-local answer
-local wrongAnswer1
-local wrongAnswer2
-local wrongAnswer3
 
 local answerText 
 local wrongAnswerText1
@@ -64,11 +59,11 @@ local textTouched = false
 --SOUNDS
 -----------------------------------------------------------------------------------------
 
--- local correctSound = audio.loadSound("Sounds/correct.mp3")
--- local correctSoundChannel
+local correctSound = audio.loadSound("Sounds/correct.mp3")
+local correctSoundChannel
 
--- local incorrectSound = audio.loadSound("Sounds/incorrect.mp3")
--- local incorrectSoundChannel
+local incorrectSound = audio.loadSound("Sounds/incorrect.mp3")
+local incorrectSoundChannel
 
 -----------------------------------------------------------------------------------------
 --LOCAL FUNCTIONS
@@ -90,7 +85,9 @@ local function TouchListenerAnswer(touch)
     if (touch.phase == "ended") then
 
         if (soundOn == true) then
-            -- correctSoundChannel = audio.play(correctSound)
+
+            correctSoundChannel = audio.play(correctSound)
+
         end
 
         BackToLevel1( )
@@ -100,12 +97,14 @@ end
 
 --checking to see if the user pressed the right answer and bring them back to level 1
 local function TouchListenerWrongAnswer(touch)
-    userAnswer = wrongText1.text
+    userAnswer = wrongAnswerText1.text
     
     if (touch.phase == "ended") then
 
         if (soundOn == true) then
-            -- incorrectSoundChannel = audio.play(incorrectSound)
+
+            incorrectSoundChannel = audio.play(incorrectSound)
+
         end
 
         BackToLevel1( )
@@ -115,12 +114,14 @@ end
 
 --checking to see if the user pressed the right answer and bring them back to level 1
 local function TouchListenerWrongAnswer2(touch)
-    userAnswer = wrongText2.text
+    userAnswer = wrongAnswerText2.text
     
     if (touch.phase == "ended") then
 
         if (soundOn == true) then
-            -- incorrectSoundChannel = audio.play(incorrectSound)
+
+            incorrectSoundChannel = audio.play(incorrectSound)
+        
         end
 
         BackToLevel1( )
@@ -130,12 +131,14 @@ end
 
 --checking to see if the user pressed the right answer and bring them back to level 1
 local function TouchListenerWrongAnswer3(touch)
-    userAnswer = wrongText3.text
+    userAnswer = wrongAnswerText3.text
     
     if (touch.phase == "ended") then
 
         if (soundOn == true) then
-            -- incorrectSoundChannel = audio.play(incorrectSound)
+
+            incorrectSoundChannel = audio.play(incorrectSound)
+
         end
 
         BackToLevel1( )
@@ -147,43 +150,104 @@ end
 --adding the event listeners 
 local function AddTextListeners()
     answerText:addEventListener( "touch", TouchListenerAnswer)
-    wrongText1:addEventListener( "touch", TouchListenerWrongAnswer)
-    wrongText2:addEventListener( "touch", TouchListenerWrongAnswer2)
-    wrongText3:addEventListener( "touch", TouchListenerWrongAnswer3)
+    wrongAnswerText1:addEventListener( "touch", TouchListenerWrongAnswer)
+    wrongAnswerText2:addEventListener( "touch", TouchListenerWrongAnswer2)
+    wrongAnswerText3:addEventListener( "touch", TouchListenerWrongAnswer3)
 end
 
 --removing the event listeners
 local function RemoveTextListeners()
     answerText:removeEventListener( "touch", TouchListenerAnswer )
-    wrongText1:removeEventListener( "touch", TouchListenerWrongAnswer)
-    wrongText2:removeEventListener( "touch", TouchListenerWrongAnswer2)
-    wrongText3:removeEventListener( "touch", TouchListenerWrongAnswer3)
+    wrongAnswerText1:removeEventListener( "touch", TouchListenerWrongAnswer)
+    wrongAnswerText2:removeEventListener( "touch", TouchListenerWrongAnswer2)
+    wrongAnswerText3:removeEventListener( "touch", TouchListenerWrongAnswer3)
 end
 
-local function DisplayQuestion()
-    --creating random numbers
-    firstNumber = math.random (0,15)
-    secondNumber = math.random (0,15)
+local function DisplayQuestions()
 
-    -- calculate answer
-    answer = firstNumber + secondNumber
+    -- choose a random question number
+    randomQuestionNum = math.random(1, 6)
 
-    -- calculate wrong answers
-    wrongAnswer1 = answer + math.random(1, 3)
-    wrongAnswer2 = answer + math.random(4, 6)
-    wrongAnswer3 = answer + math.random(7, 9)
+    if (randomQuestionNum == 1) then
 
+        -- create the question text
+        questionText.text = "How many days\nare there in a year?"
 
-    --creating the question depending on the selcetion number
-    questionText.text = firstNumber .. " + " .. secondNumber .. " ="
+        -- set answer
+        answerText.text = "365"
 
-    --creating answer text from list it corispondes with the animals list
-    answerText.text = answer
-    
-    --creating wrong answers
-    wrongText1.text = wrongAnswer1
-    wrongText2.text = wrongAnswer2
-    wrongText3.text = wrongAnswer3
+        -- set wrong answers
+        wrongAnswerText1.text = "235"
+        wrongAnswerText2.text = "280"
+        wrongAnswerText3.text = "400"
+
+    elseif (randomQuestionNum == 2) then
+
+        -- create the question text
+        questionText.text = "How many weeks\nare there in a year?"
+
+        -- set answer
+        answerText.text = "52"
+
+        -- set wrong answers
+        wrongAnswerText1.text = "60"
+        wrongAnswerText2.text = "45"
+        wrongAnswerText3.text = "27"
+
+    elseif (randomQuestionNum == 3) then
+
+        -- create the question text
+        questionText.text = "How many months are\nthere in a school year?"
+
+        -- set answer
+        answerText.text = "10"
+
+        -- set wrong answers
+        wrongAnswerText1.text = "7"
+        wrongAnswerText2.text = "12"
+        wrongAnswerText3.text = "9"
+
+    elseif (randomQuestionNum == 4) then
+
+        -- create the question text
+        questionText.text = "How many letters are\nthere in the alphabet?"
+
+        -- set answer
+        answerText.text = "26"
+
+        -- set wrong answers
+        wrongAnswerText1.text = "27"
+        wrongAnswerText2.text = "28"
+        wrongAnswerText3.text = "29"
+
+    elseif (randomQuestionNum == 5) then
+
+        -- create the question text
+        questionText.text = "How many minutes are\nthere in an hour?"
+
+        -- set answer
+        answerText.text = "60"
+
+        -- set wrong answers
+        wrongAnswerText1.text = "30"
+        wrongAnswerText2.text = "15"
+        wrongAnswerText3.text = "45"
+
+    elseif (randomQuestionNum == 6) then
+
+        -- create the question text
+        questionText.text = "How many cents are\nthere in a dollar?"
+
+        -- set answer
+        answerText.text = "100"
+
+        -- set wrong answers
+        wrongAnswerText1.text = "150"
+        wrongAnswerText2.text = "50"
+        wrongAnswerText3.text = "200"
+
+    end
+
 end
 
 local function PositionAnswers()
@@ -196,14 +260,14 @@ local function PositionAnswers()
         answerText.x = X1
         answerText.y = Y1
         
-        wrongText1.x = X1
-        wrongText1.y = Y2
+        wrongAnswerText1.x = X1
+        wrongAnswerText1.y = Y2
         
-        wrongText2.x = X2
-        wrongText2.y = Y1
+        wrongAnswerText2.x = X2
+        wrongAnswerText2.y = Y1
 
-        wrongText3.x = X2
-        wrongText3.y = Y2
+        wrongAnswerText3.x = X2
+        wrongAnswerText3.y = Y2
 
         
     elseif (answerPosition == 2) then
@@ -211,14 +275,14 @@ local function PositionAnswers()
         answerText.x = X1
         answerText.y = Y2
             
-        wrongText1.x = X2
-        wrongText1.y = Y1
+        wrongAnswerText1.x = X2
+        wrongAnswerText1.y = Y1
             
-        wrongText2.x = X2
-        wrongText2.y = Y2
+        wrongAnswerText2.x = X2
+        wrongAnswerText2.y = Y2
 
-        wrongText3.x = X1
-        wrongText3.y = Y1
+        wrongAnswerText3.x = X1
+        wrongAnswerText3.y = Y1
 
 
     elseif (answerPosition == 3) then
@@ -226,30 +290,31 @@ local function PositionAnswers()
         answerText.x = X2
         answerText.y = Y1
             
-        wrongText1.x = X2
-        wrongText1.y = Y2
+        wrongAnswerText1.x = X2
+        wrongAnswerText1.y = Y2
             
-        wrongText2.x = X1
-        wrongText2.y = Y1
+        wrongAnswerText2.x = X1
+        wrongAnswerText2.y = Y1
 
-        wrongText3.x = X1
-        wrongText3.y = Y2
+        wrongAnswerText3.x = X1
+        wrongAnswerText3.y = Y2
 
     elseif (answerPosition == 4) then
 
         answerText.x = X2
         answerText.y = Y2
             
-        wrongText1.x = X1
-        wrongText1.y = Y1
+        wrongAnswerText1.x = X1
+        wrongAnswerText1.y = Y1
             
-        wrongText2.x = X1
-        wrongText2.y = Y2
+        wrongAnswerText2.x = X1
+        wrongAnswerText2.y = Y2
 
-        wrongText3.x = X2
-        wrongText3.y = Y1
+        wrongAnswerText3.x = X2
+        wrongAnswerText3.y = Y1
             
     end
+
 end
 
 -----------------------------------------------------------------------------------------
@@ -280,12 +345,12 @@ function scene:create( event )
     -- create the answer text object & wrong answer text objects
     answerText = display.newText("", X1, Y2, Arial, 75)
     answerText.anchorX = 0
-    wrongText1 = display.newText("", X2, Y2, Arial, 75)
-    wrongText1.anchorX = 0
-    wrongText2 = display.newText("", X1, Y1, Arial, 75)
-    wrongText2.anchorX = 0
-    wrongText3 = display.newText("", X2, Y1, Arial, 75)
-    wrongText3.anchorX = 0
+    wrongAnswerText1 = display.newText("", X2, Y2, Arial, 75)
+    wrongAnswerText1.anchorX = 0
+    wrongAnswerText2 = display.newText("", X1, Y1, Arial, 75)
+    wrongAnswerText2.anchorX = 0
+    wrongAnswerText3 = display.newText("", X2, Y1, Arial, 75)
+    wrongAnswerText3.anchorX = 0
 
     -----------------------------------------------------------------------------------------
 
@@ -294,9 +359,9 @@ function scene:create( event )
     sceneGroup:insert(cover)
     sceneGroup:insert(questionText)
     sceneGroup:insert(answerText)
-    sceneGroup:insert(wrongText1)
-    sceneGroup:insert(wrongText2)
-    sceneGroup:insert(wrongText3)
+    sceneGroup:insert(wrongAnswerText1)
+    sceneGroup:insert(wrongAnswerText2)
+    sceneGroup:insert(wrongAnswerText3)
 
 
 end --function scene:create( event )
@@ -321,7 +386,7 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
-        DisplayQuestion()
+        DisplayQuestions()
         PositionAnswers()
         AddTextListeners()
     end

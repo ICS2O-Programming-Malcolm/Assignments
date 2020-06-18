@@ -216,8 +216,8 @@ local function onCollision(self, event)
             -- store the event.target in the variable theMissile
             theMissile = event.target
 
-            -- remove the physics body
-            physics.removeBody(jet)
+            -- set the gravity
+            physics.setGravity(0, 0)
 
             -- show overlay with math question
             composer.showOverlay( "level1_question", { isModal = true, effect = "crossFade", time = 100})
@@ -371,6 +371,9 @@ local function PauseScreenTransition()
     -- pause the timer
     timer.pause(countDownTimer)
 
+    -- pause the audio
+    audio.pause(level1MusicChannel)
+
     -- show pause screen overlay
     composer.showOverlay("pause_screen", { isModal = true, effect = "crossFade", time = 100})
 
@@ -397,8 +400,8 @@ function ResumeGameFromQuestion()
     -- make jet visible again
     jet.isVisible = true
 
-    -- add physics body
-    physics.addBody( jet, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
+    -- set gravity
+    physics.setGravity(0, GRAVITY)
     
     if (questionsAnswered > 0) then
         if (theMissile ~= nil) and (theMissile.isBodyActive == true) then
@@ -418,7 +421,11 @@ function ResumeGameFromPause()
     -- add physics body
     physics.addBody( jet, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
 
+    -- resume the timer
     timer.resume(countDownTimer)
+
+    -- resume the music
+    audio.resume(level1MusicChannel)
 
 end
 
@@ -655,7 +662,7 @@ function scene:hide( event )
         if (soundOn == true) then
 
             -- stop level 1 music
-            audio.stop(level1MusicChannel)
+            audio.pause(level1MusicChannel)
             
         end
 
