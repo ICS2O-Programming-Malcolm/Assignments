@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------------------
--- character_select_screen.lua
+-- character_select.lua
 -- Created by: Malcolm Cantin
 -- Created on: Apr. 28th, 2020
 -- Description: This is the character select screen of the game. The user will have a 
@@ -20,7 +20,7 @@ local physics = require( "physics" )
 -----------------------------------------------------------------------------------------
 
 -- Naming Scene
-sceneName = "character_select_screen"
+sceneName = "character_select"
 
 -----------------------------------------------------------------------------------------
 
@@ -32,212 +32,90 @@ local scene = composer.newScene( sceneName )
 -----------------------------------------------------------------------------------------
 
 -- The local variables for this scene
-local questionText
+local characterSelectText
 
-local firstNumber
-local secondNumber
-
-local answer
-local wrongAnswer1
-local wrongAnswer2
-local wrongAnswer3
-
-local answerText 
-local wrongAnswerText1
-local wrongAnswerText2
-local wrongAnswerText3
-
-local answerPosition = 1
 local bkg
 local cover
 
-local X1 = display.contentWidth*2/7
-local X2 = display.contentWidth*4/7
-local Y1 = display.contentHeight*1/2
-local Y2 = display.contentHeight*5.5/7
+local character
 
-local userAnswer
-local textTouched = false
+local characterSelectJet
+local characterSelectJet2
+local characterSelectPlane
+
+local characterSelectJetText
+local characterSelectJet2Text
+local characterSelectPlaneText
+
+-----------------------------------------------------------------------------------------
+-- GLOBAL VARIABLES
+-----------------------------------------------------------------------------------------
+
+userSelect = 0
 
 -----------------------------------------------------------------------------------------
 --LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 
 --making transition to next scene
-local function BackToLevel1() 
-    composer.hideOverlay("crossFade", 400 )
-  
-    ResumeGame()
+local function Level1Transition()
+
+    composer.gotoScene("level1_screen", {effect = "fade", 3000})
+
 end 
 
 -----------------------------------------------------------------------------------------
 --checking to see if the user pressed the right answer and bring them back to level 1
-local function TouchListenerAnswer(touch)
-    userAnswer = answerText.text
+local function TouchListenerJet(touch)
+
+    userSelect = 1
     
     if (touch.phase == "ended") then
 
-        if (soundOn == true) then
-            correctSoundChannel = audio.play(correctSound)
-        end
-
-        BackToLevel1( )
+        Level1Transition()
         
     end 
+
 end
 
 --checking to see if the user pressed the right answer and bring them back to level 1
-local function TouchListenerWrongAnswer(touch)
-    userAnswer = wrongText1.text
+local function TouchListenerPlane(touch)
+
+    userSelect = 2
     
     if (touch.phase == "ended") then
 
-        if (soundOn == true) then
-            incorrectSoundChannel = audio.play(incorrectSound)
-        end
-
-        BackToLevel1( )
+        Level1Transition()
         
-    end 
+    end
+
 end
 
 --checking to see if the user pressed the right answer and bring them back to level 1
-local function TouchListenerWrongAnswer2(touch)
-    userAnswer = wrongText2.text
+local function TouchListenerJet2(touch)
+
+    userSelect = 3
     
     if (touch.phase == "ended") then
 
-        if (soundOn == true) then
-            incorrectSoundChannel = audio.play(incorrectSound)
-        end
-
-        BackToLevel1( )
+        Level1Transition()
         
     end 
+
 end
-
---checking to see if the user pressed the right answer and bring them back to level 1
-local function TouchListenerWrongAnswer3(touch)
-    userAnswer = wrongText3.text
-    
-    if (touch.phase == "ended") then
-
-        if (soundOn == true) then
-            incorrectSoundChannel = audio.play(incorrectSound)
-        end
-
-        BackToLevel1( )
-        
-    end 
-end
-
 
 --adding the event listeners 
-local function AddTextListeners ( )
-    answerText:addEventListener( "touch", TouchListenerAnswer )
-    wrongText1:addEventListener( "touch", TouchListenerWrongAnswer)
-    wrongText2:addEventListener( "touch", TouchListenerWrongAnswer2)
-    wrongText3:addEventListener( "touch", TouchListenerWrongAnswer3)
+local function AddTouchListeners()
+    characterSelectJet:addEventListener( "touch", TouchListenerJet )
+    characterSelectPlane:addEventListener( "touch", TouchListenerPlane )
+    characterSelectJet2:addEventListener( "touch", TouchListenerJet2 )
 end
 
 --removing the event listeners
-local function RemoveTextListeners()
-    answerText:removeEventListener( "touch", TouchListenerAnswer )
-    wrongText1:removeEventListener( "touch", TouchListenerWrongAnswer)
-    wrongText2:removeEventListener( "touch", TouchListenerWrongAnswer2)
-    wrongText3:removeEventListener( "touch", TouchListenerWrongAnswer3)
-end
-
-local function DisplayQuestion()
-    --creating random numbers
-    firstNumber = math.random (0,15)
-    secondNumber = math.random (0,15)
-
-    -- calculate answer
-    answer = firstNumber + secondNumber
-
-    -- calculate wrong answers
-    wrongAnswer1 = answer + math.random(1, 3)
-    wrongAnswer2 = answer + math.random(4, 6)
-    wrongAnswer3 = answer + math.random(7, 9)
-
-
-    --creating the question depending on the selcetion number
-    questionText.text = firstNumber .. " + " .. secondNumber .. " ="
-
-    --creating answer text from list it corispondes with the animals list
-    answerText.text = answer
-    
-    --creating wrong answers
-    wrongText1.text = wrongAnswer1
-    wrongText2.text = wrongAnswer2
-    wrongText3.text = wrongAnswer3
-end
-
-local function PositionAnswers()
-
-    --creating random start position in a cretain area
-    answerPosition = math.random(1,4)
-
-    if (answerPosition == 1) then
-
-        answerText.x = X1
-        answerText.y = Y1
-        
-        wrongText1.x = X1
-        wrongText1.y = Y2
-        
-        wrongText2.x = X2
-        wrongText2.y = Y1
-
-        wrongText3.x = X2
-        wrongText3.y = Y2
-
-        
-    elseif (answerPosition == 2) then
-
-        answerText.x = X1
-        answerText.y = Y2
-            
-        wrongText1.x = X2
-        wrongText1.y = Y1
-            
-        wrongText2.x = X2
-        wrongText2.y = Y2
-
-        wrongText3.x = X1
-        wrongText3.y = Y1
-
-
-    elseif (answerPosition == 3) then
-
-        answerText.x = X2
-        answerText.y = Y1
-            
-        wrongText1.x = X2
-        wrongText1.y = Y2
-            
-        wrongText2.x = X1
-        wrongText2.y = Y1
-
-        wrongText3.x = X1
-        wrongText3.y = Y2
-
-    elseif (answerPosition == 4) then
-
-        answerText.x = X2
-        answerText.y = Y2
-            
-        wrongText1.x = X1
-        wrongText1.y = Y1
-            
-        wrongText2.x = X1
-        wrongText2.y = Y2
-
-        wrongText3.x = X2
-        wrongText3.y = Y1
-            
-    end
+local function RemoveTouchListeners()
+    characterSelectJet:removeEventListener( "touch", TouchListenerJet )
+    characterSelectPlane:removeEventListener( "touch", TouchListenerPlane )
+    characterSelectJet2:removeEventListener( "touch", TouchListenerJet2 )
 end
 
 -----------------------------------------------------------------------------------------
@@ -262,30 +140,49 @@ function scene:create( event )
     --setting its colour
     cover:setFillColor(96/255, 96/255, 96/255)
 
-    -- create the question text object
-    questionText = display.newText("", display.contentCenterX, display.contentCenterY*3/8, Arial, 75)
+    -- create the character select text object
+    characterSelectText = display.newText("Choose Your Character!", display.contentCenterX, display.contentCenterY*3/8 - 40, Arial, 75)
+    characterSelectText:setFillColor(0/255, 204/255, 0/255)
 
-    -- create the answer text object & wrong answer text objects
-    answerText = display.newText("", X1, Y2, Arial, 75)
-    answerText.anchorX = 0
-    wrongText1 = display.newText("", X2, Y2, Arial, 75)
-    wrongText1.anchorX = 0
-    wrongText2 = display.newText("", X1, Y1, Arial, 75)
-    wrongText2.anchorX = 0
-    wrongText3 = display.newText("", X2, Y1, Arial, 75)
-    wrongText3.anchorX = 0
+    -- create the jet
+    characterSelectJet = display.newImage("Images/characterSelectJet.png")
+    characterSelectJet.x = display.contentWidth*1/3 - 40
+    characterSelectJet.y = display.contentHeight/2 - 110
+
+    -- create the jet #1 text object
+    characterSelectJetText = display.newText("Jet #1", display.contentWidth/2 + 30, display.contentHeight/3 - 20, Arial, 60)
+    characterSelectJetText:setFillColor(0/255, 128/255, 128/255)
+
+    -- create the plane
+    characterSelectPlane = display.newImage("Images/characterSelectPlane.png")
+    characterSelectPlane.x = display.contentWidth/2
+    characterSelectPlane.y = display.contentHeight/2 + 50
+
+    -- create the plane text object
+    characterSelectPlaneText = display.newText("Plane", display.contentWidth/2 - 250, display.contentHeight/2 + 100, Arial, 60)
+    characterSelectPlaneText:setFillColor(0/255, 128/255, 128/255)
+
+    -- create jet 2
+    characterSelectJet2 = display.newImage("Images/characterSelectJet2.png")
+    characterSelectJet2.x = display.contentWidth*2/3 + 90
+    characterSelectJet2.y = display.contentHeight/2 + 250
+
+    -- create the jet #2 text object
+    characterSelectJet2Text = display.newText("Jet #2", display.contentWidth/2 + 20, display.contentHeight - 60, Arial, 60)
+    characterSelectJet2Text:setFillColor(0/255, 128/255, 128/255)
 
     -----------------------------------------------------------------------------------------
 
     -- insert all objects for this scene into the scene group
     sceneGroup:insert(bkg)
     sceneGroup:insert(cover)
-    sceneGroup:insert(questionText)
-    sceneGroup:insert(answerText)
-    sceneGroup:insert(wrongText1)
-    sceneGroup:insert(wrongText2)
-    sceneGroup:insert(wrongText3)
-
+    sceneGroup:insert(characterSelectText)
+    sceneGroup:insert(characterSelectJet)
+    sceneGroup:insert(characterSelectPlane)
+    sceneGroup:insert(characterSelectJet2)
+    sceneGroup:insert(characterSelectJetText)
+    sceneGroup:insert(characterSelectPlaneText)
+    sceneGroup:insert(characterSelectJet2Text)
 
 end --function scene:create( event )
 
@@ -309,9 +206,7 @@ function scene:show( event )
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
-        DisplayQuestion()
-        PositionAnswers()
-        AddTextListeners()
+        AddTouchListeners()
     end
 
 end --function scene:show( event )
@@ -336,7 +231,7 @@ function scene:hide( event )
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
-        RemoveTextListeners()
+        RemoveTouchListeners()
     end
 
 end --function scene:hide( event )

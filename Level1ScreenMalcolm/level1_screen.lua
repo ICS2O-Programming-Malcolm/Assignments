@@ -53,8 +53,8 @@ local secondsLeft = 30
 local clockText
 local countDownTimer
 
--- Variable for the jet
-local jet
+-- Variable for the character
+local character
 
 -- Variable for the evil ship
 local evilShip
@@ -109,31 +109,31 @@ local function YouWinTransition()
     composer.gotoScene( "you_win" )
 end
 
--- When right arrow is touched, move jet right
+-- When right arrow is touched, move character right
 local function right (touch)
     motionx = SPEED
-    jet.xScale = 1
+    character.xScale = 1
 end
 
 -- When up arrow is touched, add vertical so it can jump
 local function up (touch)
-    if (jet ~= nil) then
-        jet:setLinearVelocity( 0, LINEAR_VELOCITY )
+    if (character ~= nil) then
+        character:setLinearVelocity( 0, LINEAR_VELOCITY )
     end
 end
 
--- When left arrow is touched, move jet left
+-- When left arrow is touched, move character left
 local function left (touch)
     motionx = -SPEED
-    jet.xScale = -1
+    character.xScale = -1
 end
 
--- Move jet horizontally
-local function moveJet (event)
-    jet.x = jet.x + motionx
+-- Move character horizontally
+local function moveCharacter (event)
+    character.x = character.x + motionx
 end
  
--- Stop jet movement when no arrow is pushed
+-- Stop character movement when no arrow is pushed
 local function stop (event)
     if (event.phase =="ended") then
         motionx = 0
@@ -157,33 +157,53 @@ end
 
 -- This function add the runtime listeners
 local function AddRuntimeListeners()
-    Runtime:addEventListener("enterFrame", moveJet)
+    Runtime:addEventListener("enterFrame", moveCharacter)
     Runtime:addEventListener("touch", stop )
 end
 
 -- This function removes the runtime listeners
 local function RemoveRuntimeListeners()
-    Runtime:removeEventListener("enterFrame", moveJet)
+    Runtime:removeEventListener("enterFrame", moveCharacter)
     Runtime:removeEventListener("touch", stop )
 end
 
--- This function replaces the jet
-local function ReplaceJet()
+-- This function replaces the character
+local function ReplaceCharacter()
     
-    -- create the image of the jet
-    jet = display.newImage("Images/jet.png")
-    jet.x = 75
-    jet.y = display.contentHeight/2 + 50
-    jet.myName = "Jet"
+    if (userSelect == 1) then
 
-    -- intialize horizontal movement of jet
+        -- create the image of the character
+        character = display.newImage("Images/jet.png")
+        character.x = 75
+        character.y = display.contentHeight/2 + 50
+        character.myName = "Jet"
+
+    elseif (userSelect == 2) then
+
+        -- create the image of the character
+        character = display.newImage("Images/plane.png")
+        character.x = 75
+        character.y = display.contentHeight/2 + 50
+        character.myName = "Plane"
+
+    elseif (userSelect == 3) then
+
+        -- create the image of the character
+        character = display.newImage("Images/jet2.png")
+        character.x = 75
+        character.y = display.contentHeight/2 + 50
+        character.myName = "Jet2"
+
+    end
+
+    -- intialize horizontal movement of character
     motionx = 0
 
     -- add physics body
-    physics.addBody( jet, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
+    physics.addBody( character, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
 
-    -- prevent jet from being able to tip over
-    jet.isFixedRotation = true
+    -- prevent character from being able to tip over
+    character.isFixedRotation = true
 
     -- add back arrow listeners
     AddArrowEventListeners()
@@ -198,7 +218,7 @@ local function MakeMissilesVisible()
     missile3.isVisible = true
 end
 
--- This function check if the jet has collided with any of the things in the scene
+-- This function check if the character has collided with any of the things in the scene
 local function onCollision(self, event)
 
     if ( event.phase == "began" ) then
@@ -211,7 +231,7 @@ local function onCollision(self, event)
             motionx = 0
 
             -- make the character invisible
-            jet.isVisible = false
+            character.isVisible = false
 
             -- store the event.target in the variable theMissile
             theMissile = event.target
@@ -362,11 +382,11 @@ end
 -- This is the transition to the pause menu
 local function PauseScreenTransition()
 
-    -- make the jet invisible
-    jet.isVisible = false 
+    -- make the character invisible
+    character.isVisible = false 
 
     -- remove physics body
-    physics.removeBody(jet)
+    physics.removeBody(character)
 
     -- pause the timer
     timer.pause(countDownTimer)
@@ -384,7 +404,7 @@ local function MoveUp(event)
 
     if (event.keyName == "up") then
 
-        jet.y = jet.y + UP_SPEED
+        character.y = character.y + UP_SPEED
 
     end
 
@@ -397,8 +417,8 @@ end
 -- This function will resume the game
 function ResumeGameFromQuestion() 
 
-    -- make jet visible again
-    jet.isVisible = true
+    -- make character visible again
+    character.isVisible = true
 
     -- set gravity
     physics.setGravity(0, GRAVITY)
@@ -415,11 +435,11 @@ end
 -- This function will resume the game
 function ResumeGameFromPause() 
 
-    -- make jet visible again
-    jet.isVisible = true
+    -- make character visible again
+    character.isVisible = true
 
     -- add physics body
-    physics.addBody( jet, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
+    physics.addBody( character, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
 
     -- resume the timer
     timer.resume(countDownTimer)
@@ -624,8 +644,8 @@ function scene:show( event )
         -- Initialize questionsAnswered to 0
         questionsAnswered = 0
 
-        -- create the jet, add physics bodies and runtime listeners
-        ReplaceJet()
+        -- create the character, add physics bodies and runtime listeners
+        ReplaceCharacter()
 
         -- make missiles visible
         MakeMissilesVisible()
@@ -680,13 +700,13 @@ function scene:hide( event )
 
         physics.stop()
 
-        -- remove runtime listeners that move the jet
+        -- remove runtime listeners that move the character
         RemoveArrowEventListeners()
 
         RemoveRuntimeListeners()
 
-        -- remove jet
-        display.remove(jet)
+        -- remove character
+        display.remove(character)
 
     end
 

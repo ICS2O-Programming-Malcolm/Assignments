@@ -4,9 +4,8 @@
 -- Date: May 16, 2017
 -- Edited by: Malcolm Cantin
 -- Editied on: June 17, 2020
--- Description: This is the pause screen of my game. In it, the user can choose to mute 
--- the sound if it is not already, resume the game, and they can also return to the main 
--- menu.
+-- Description: This is the pause screen of my game. In it, the user can resume the game
+-- or they can return to the main menu.
 -----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
@@ -71,72 +70,6 @@ local function ReturnToMenu()
 
 end
 
--- This function will mute all sounds
-local function Mute(touch)
-
-    if (soundOn == true) then
-
-        muteButton.isVisible = false
-
-        unmuteButton.isVisible = true
-
-        if (touch.phase == "ended") then
-
-            -- make soundOn false
-            soundOn = false
-
-            -- make mute button visible
-            muteButton.isVisible = true
-            unmuteButton.isVisible = false
-
-        end
-
-    end
-
-end
-
--- This function will unmute all sounds
-local function Unmute(touch)
-
-    if (soundOn == false) then
-
-        muteButton.isVisible = true
-
-        unmuteButton.isVisible = false
-
-        if (touch.phase == "ended") then
-
-            -- make soundOn false
-            soundOn = true
-
-            -- make mute button visible
-            muteButton.isVisible = false
-            unmuteButton.isVisible = true
-
-        end
-
-    end
-
-end
-
--- Add mute/unmute button listeners
-local function AddMuteUnmuteListeners()
-
-    unmuteButton:addEventListener("touch", Mute)
-
-    muteButton:addEventListener("touch", Unmute)
-
-end
-
--- Remove mute/unmute button listeners
-local function RemoveMuteUnmuteListeners()
-
-    unmuteButton:removeEventListener("touch", Mute)
-
-    muteButton:removeEventListener("touch", Unmute)
-
-end
-
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -162,26 +95,12 @@ function scene:create( event )
     -- create the question text object
     questionText = display.newText("", display.contentCenterX, display.contentCenterY*3/8, Arial, 75)
 
-    -- mute button 
-    muteButton = display.newImageRect("Images/mute.png", 70, 70)
-    muteButton:scale(2, 2)
-    muteButton.x = display.contentCenterX
-    muteButton.y = display.contentCenterY
-        
-    -- unmute button 
-    unmuteButton = display.newImageRect("Images/unmute.png", 70, 70)
-    unmuteButton:scale(2, 2)
-    unmuteButton.x = display.contentCenterX
-    unmuteButton.y = display.contentCenterY
-
     -----------------------------------------------------------------------------------------
 
     -- insert all objects for this scene into the scene group
     sceneGroup:insert(bkg)
     sceneGroup:insert(cover)
     sceneGroup:insert(questionText)
-    sceneGroup:insert( muteButton )
-    sceneGroup:insert( unmuteButton )
 
     -----------------------------------------------------------------------------------------
     -- BUTTON WIDGETS
@@ -194,8 +113,8 @@ function scene:create( event )
             x = display.contentWidth/2,
             y = 170,
 
-            width = 200,
-            height = 100,
+            width = 400,
+            height = 200,
 
             -- Insert the images here
             defaultFile = "Images/Resume Button Unpressed.png",
@@ -210,10 +129,10 @@ function scene:create( event )
         {   
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = display.contentHeight - 160,
+            y = display.contentHeight - 170,
 
-            width = 200,
-            height = 100,
+            width = 400,
+            height = 200,
 
             -- Insert the images here
             defaultFile = "Images/Main Menu Button Unpressed.png",
@@ -252,9 +171,6 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
 
-        -- add the mute and unmute functionality to the buttons
-        AddMuteUnmuteListeners()
-
     end
 
 end --function scene:show( event )
@@ -275,9 +191,6 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
         --parent:resumeGame()
-
-        -- Remove the mute/unmute listeners
-        RemoveMuteUnmuteListeners()
 
     -----------------------------------------------------------------------------------------
 

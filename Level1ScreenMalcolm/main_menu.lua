@@ -140,8 +140,9 @@ end
 -----------------------------------------------------------------------------------------
 
 -- Creating Transition to Level1 Screen
-local function Level1ScreenTransition( )
-    composer.gotoScene( "level1_screen", {effect = "flipFadeOutIn", time = 1000})
+local function CharacterSelectScreenTransition( )
+    -- show character select screen overlay
+    composer.showOverlay("character_select", { isModal = true, effect = "crossFade", time = 100})
 end    
 
 -----------------------------------------------------------------------------------------
@@ -228,7 +229,7 @@ function scene:create( event )
             overFile = "Images/Start Button Pressed.png",
 
             -- When the button is released, call the Level1 screen transition function
-            onRelease = Level1ScreenTransition          
+            onRelease = CharacterSelectScreenTransition          
         } )
 
     -----------------------------------------------------------------------------------------
