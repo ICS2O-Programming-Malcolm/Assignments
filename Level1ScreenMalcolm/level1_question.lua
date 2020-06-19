@@ -43,6 +43,11 @@ local wrongAnswerText1
 local wrongAnswerText2
 local wrongAnswerText3
 
+local correct
+local incorrect
+
+local explosion
+
 local answerPosition = 1
 local bkg
 local cover
@@ -59,17 +64,23 @@ local textTouched = false
 --SOUNDS
 -----------------------------------------------------------------------------------------
 
+-- Load correct sound
 local correctSound = audio.loadSound("Sounds/correct.mp3")
 local correctSoundChannel
 
+-- Load incorrect sound
 local incorrectSound = audio.loadSound("Sounds/incorrect.mp3")
 local incorrectSoundChannel
+
+-- Load explosion sound
+local explosionSound = audio.loadSound("Sounds/explosion.mp3")
+local explosionSoundChannel
 
 -----------------------------------------------------------------------------------------
 --LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 
---making transition to next scene
+-- Transition to level 1
 local function BackToLevel1() 
     composer.hideOverlay("crossFade", 400 )
   
@@ -77,8 +88,48 @@ local function BackToLevel1()
     
 end 
 
+-- Transition to the lose screen
+local function YouLoseTransition()
+
+    composer.gotoScene( "you_lose", {effect = "zoomOutIn", time = 2000} )
+
+end
+
 -----------------------------------------------------------------------------------------
---checking to see if the user pressed the right answer and bring them back to level 1
+
+-- The explosion animation for if the user selects a wrong answer
+local function ExplosionAnimation()
+
+    explosion.isVisible = true
+
+    if (soundOn == true) then
+
+        explosionSoundChannel = audio.play(explosionSound, {channel = 6})
+
+    end
+
+    explosion.width = explosion.width + 12
+    explosion.height = explosion.height + 12
+
+    timer.performWithDelay(4000, YouLoseTransition)
+
+end
+
+-- This function adds the event listener for the explosion animation
+local function AddExplosionListener()
+
+    Runtime:addEventListener("enterFrame", ExplosionAnimation)
+
+end
+
+-- This function removes the event listener for the explosion animation
+local function RemoveExplosionListener()
+
+    Runtime:removeEventListener("enterFrame", ExplosionAnimation)
+
+end
+
+-- checking to see if the user pressed the right answer
 local function TouchListenerAnswer(touch)
     userAnswer = answerText.text
     
@@ -86,16 +137,18 @@ local function TouchListenerAnswer(touch)
 
         if (soundOn == true) then
 
-            correctSoundChannel = audio.play(correctSound)
+            correctSoundChannel = audio.play(correctSound, {channel = 7})
 
         end
 
-        BackToLevel1( )
+        correct.isVisible = true
+
+        timer.performWithDelay(1000, BackToLevel1)
         
     end 
 end
 
---checking to see if the user pressed the right answer and bring them back to level 1
+-- checking to see if the user pressed the right answer
 local function TouchListenerWrongAnswer(touch)
     userAnswer = wrongAnswerText1.text
     
@@ -103,16 +156,19 @@ local function TouchListenerWrongAnswer(touch)
 
         if (soundOn == true) then
 
-            incorrectSoundChannel = audio.play(incorrectSound)
+            incorrectSoundChannel = audio.play(incorrectSound, {channel = 8})
 
         end
 
-        BackToLevel1( )
+        incorrect.isVisible = true
+
+        timer.performWithDelay(1000, AddExplosionListener)
+        timer.performWithDelay(4000, RemoveExplosionListener)
         
     end 
 end
 
---checking to see if the user pressed the right answer and bring them back to level 1
+-- checking to see if the user pressed the right answer
 local function TouchListenerWrongAnswer2(touch)
     userAnswer = wrongAnswerText2.text
     
@@ -120,16 +176,19 @@ local function TouchListenerWrongAnswer2(touch)
 
         if (soundOn == true) then
 
-            incorrectSoundChannel = audio.play(incorrectSound)
+            incorrectSoundChannel = audio.play(incorrectSound, {channel = 9})
         
         end
 
-        BackToLevel1( )
+        incorrect.isVisible = true
+
+        timer.performWithDelay(1000, AddExplosionListener)
+        timer.performWithDelay(4000, RemoveExplosionListener)
         
     end 
 end
 
---checking to see if the user pressed the right answer and bring them back to level 1
+-- checking to see if the user pressed the right answer
 local function TouchListenerWrongAnswer3(touch)
     userAnswer = wrongAnswerText3.text
     
@@ -137,32 +196,36 @@ local function TouchListenerWrongAnswer3(touch)
 
         if (soundOn == true) then
 
-            incorrectSoundChannel = audio.play(incorrectSound)
+            incorrectSoundChannel = audio.play(incorrectSound, {channel = 10})
 
         end
 
-        BackToLevel1( )
+        incorrect.isVisible = true
+
+        timer.performWithDelay(1000, AddExplosionListener)
+        timer.performWithDelay(4000, RemoveExplosionListener)
         
     end 
 end
 
 
---adding the event listeners 
-local function AddTextListeners()
+-- adding the event listeners 
+local function AddTouchListeners()
     answerText:addEventListener( "touch", TouchListenerAnswer)
     wrongAnswerText1:addEventListener( "touch", TouchListenerWrongAnswer)
     wrongAnswerText2:addEventListener( "touch", TouchListenerWrongAnswer2)
     wrongAnswerText3:addEventListener( "touch", TouchListenerWrongAnswer3)
 end
 
---removing the event listeners
-local function RemoveTextListeners()
+-- removing the event listeners
+local function RemoveTouchListeners()
     answerText:removeEventListener( "touch", TouchListenerAnswer )
     wrongAnswerText1:removeEventListener( "touch", TouchListenerWrongAnswer)
     wrongAnswerText2:removeEventListener( "touch", TouchListenerWrongAnswer2)
     wrongAnswerText3:removeEventListener( "touch", TouchListenerWrongAnswer3)
 end
 
+-- This function will display a random question
 local function DisplayQuestions()
 
     -- choose a random question number
@@ -250,6 +313,7 @@ local function DisplayQuestions()
 
 end
 
+-- This function positions the answers
 local function PositionAnswers()
 
     --creating random start position in a cretain area
@@ -352,6 +416,22 @@ function scene:create( event )
     wrongAnswerText3 = display.newText("", X2, Y1, Arial, 75)
     wrongAnswerText3.anchorX = 0
 
+    -- create the text object that will say Correct, set the colour and then hide it
+    correct = display.newText("Good job!", display.contentWidth/2, display.contentHeight*1/3, nil, 50 )
+    correct:setTextColor(0/255, 255/255, 0/255)
+    correct.isVisible = false
+
+    -- create the text object that will say Incorrect, set the colour and then hide it
+    incorrect = display.newText("Sorry, that's incorrect!", display.contentWidth/2, display.contentHeight*1/3, nil, 50 )
+    incorrect:setTextColor(255/255, 0/255, 0/255)
+    incorrect.isVisible = false
+
+    explosion = display.newImage("Images/explosion.png")
+    explosion.x = display.contentCenterX
+    explosion.y = display.contentCenterY
+    explosion:scale(0.25, 0.25)
+    explosion.isVisible = false
+
     -----------------------------------------------------------------------------------------
 
     -- insert all objects for this scene into the scene group
@@ -362,6 +442,9 @@ function scene:create( event )
     sceneGroup:insert(wrongAnswerText1)
     sceneGroup:insert(wrongAnswerText2)
     sceneGroup:insert(wrongAnswerText3)
+    sceneGroup:insert(correct)
+    sceneGroup:insert(incorrect)
+    sceneGroup:insert(explosion)
 
 
 end --function scene:create( event )
@@ -388,7 +471,7 @@ function scene:show( event )
         -- Example: start timers, begin animation, play audio, etc.
         DisplayQuestions()
         PositionAnswers()
-        AddTextListeners()
+        AddTouchListeners()
     end
 
 end --function scene:show( event )
@@ -409,11 +492,18 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
         --parent:resumeGame()
+
+        if (soundOn == true) then
+
+            audio.stop(explosionSoundChannel)
+    
+        end
+
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
-        RemoveTextListeners()
+        RemoveTouchListeners()
     end
 
 end --function scene:hide( event )

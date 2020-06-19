@@ -60,7 +60,7 @@ userSelect = 0
 --making transition to next scene
 local function Level1Transition()
 
-    composer.gotoScene("level1_screen", {effect = "fade", 3000})
+    composer.gotoScene("level1_screen", {effect = "fade", time = 2000})
 
 end 
 

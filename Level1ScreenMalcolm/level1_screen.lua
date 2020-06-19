@@ -68,7 +68,7 @@ local theMissile
 -- Variables for motion
 local motionx = 0
 local SPEED = 8
-local LINEAR_VELOCITY = -100
+local LINEAR_VELOCITY = -150
 local GRAVITY = 3
 
 -- Variables for arrows that will be on the screen
@@ -92,6 +92,7 @@ local pauseButton
 -- SOUNDS
 -----------------------------------------------------------------------------------------
 
+-- Level 1 Music for the game
 local level1Music = audio.loadSound("Sounds/level1Music.mp3")
 local level1MusicChannel
 
@@ -101,12 +102,12 @@ local level1MusicChannel
 
 -- Transition to the lose screen
 local function YouLoseTransition()
-    composer.gotoScene( "you_lose" )
+    composer.gotoScene( "you_lose", {effect = "flip", 1500} )
 end
 
 -- Transition to the win screen
 local function YouWinTransition()
-    composer.gotoScene( "you_win" )
+    composer.gotoScene( "you_win", {effect = "zoomInOut", 4000} )
 end
 
 -- When right arrow is touched, move character right
@@ -212,6 +213,7 @@ local function ReplaceCharacter()
     AddRuntimeListeners()
 end
 
+-- This function will make all the missiles visible
 local function MakeMissilesVisible()
     missile1.isVisible = true
     missile2.isVisible = true
@@ -257,7 +259,9 @@ local function onCollision(self, event)
                 timer.cancel(countDownTimer)
                 clockText.isVisible = false
 
-                composer.gotoScene( "you_win" )
+                character.isVisible = false
+
+                YouWinTransition()
 
             end
         end
@@ -396,17 +400,6 @@ local function PauseScreenTransition()
 
     -- show pause screen overlay
     composer.showOverlay("pause_screen", { isModal = true, effect = "crossFade", time = 100})
-
-end
-
--- This function is meant to allow the use of arrow keys but is not in use at the moment
-local function MoveUp(event)
-
-    if (event.keyName == "up") then
-
-        character.y = character.y + UP_SPEED
-
-    end
 
 end
 
@@ -637,7 +630,7 @@ function scene:show( event )
         if (soundOn == true) then
 
             -- play level 1 music
-            level1MusicChannel = audio.play(level1Music)
+            level1MusicChannel = audio.play(level1Music, {channel = 5, loops = -1})
             
         end
 
@@ -655,8 +648,6 @@ function scene:show( event )
 
         -- add collision listeners to objects
         AddCollisionListeners()
-
-        -- Runtime:addEventListener("up", MoveUp)
 
     end
 

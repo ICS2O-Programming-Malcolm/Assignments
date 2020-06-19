@@ -41,6 +41,7 @@ local movingText = true
 -- SOUNDS
 ----------------------------------------------------------------------------------------
 
+-- load the splash screen sound
 local splashScreenSound = audio.loadSound("Sounds/splashScreenSound.mp3")
 local splashScreenSoundChannel
 
@@ -216,7 +217,7 @@ function scene:show( event )
 
     elseif ( phase == "did" ) then
         -- start the splash screen music
-        splashScreenSoundChannel = audio.play(splashScreenSound)
+        splashScreenSoundChannel = audio.play(splashScreenSound, {channel = 1})
 
         -- Call the AnimateKey function as soon as we enter the frame.
         Runtime:addEventListener("enterFrame", AnimateKey)

@@ -5,6 +5,7 @@
 -- Edited by: Malcolm Cantin
 -- Editied on: Apr. 28th, 2020
 -- Course: ICS2O Programming
+-- Description: This is the win screen of my game
 -----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ local mainMenuButton
 -- SOUNDS
 -----------------------------------------------------------------------------------------
 
--- add lose sound effect
+-- add win sound effect
 local winSound = audio.loadSound("Sounds/win.mp3")
 local winSoundChannel
 
@@ -134,7 +135,7 @@ function scene:show( event )
         if (soundOn == true) then
 
             -- play win sound effect
-            winSoundChannel = audio.play(winSound)
+            winSoundChannel = audio.play(winSound, {channel = 12})
 
         end
 

@@ -5,6 +5,7 @@
 -- Edited by: Malcolm Cantin
 -- Editied on: Apr. 28th, 2020
 -- Course: ICS2O Programming
+-- Description: This is the lose screen of my game
 -----------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------
@@ -134,7 +135,7 @@ function scene:show( event )
         if (soundOn == true) then
 
             -- play lose sound effect
-            loseSoundChannel = audio.play(loseSound)
+            loseSoundChannel = audio.play(loseSound, {channel = 11})
             
         end
 

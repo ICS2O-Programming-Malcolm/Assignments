@@ -4,7 +4,7 @@
 -- Course: ICS2O Programming
 -- Date: June 10, 2020
 -- Description: This is the main menu, that includes a credits screen, instructions 
--- screen, and a level 1 screen with buttons to each and back buttons from the 
+-- screen, and a character select screen with buttons to each and back buttons from the 
 -- credits/instructions screens.
 -----------------------------------------------------------------------------------------
 
@@ -310,11 +310,12 @@ function scene:show( event )
     -- Example: start timers, begin animation, play audio, etc.
     elseif ( phase == "did" ) then       
         
+        -- start the animation for the jet
         Runtime:addEventListener("enterFrame", RotateJet)
 
         if (soundOn == true) then
             -- play the background music
-            mainMenuMusicChannel = audio.play(mainMenuMusic, {loops = -1})
+            mainMenuMusicChannel = audio.play(mainMenuMusic, {channel = 2, loops = -1})
             muteButton.isVisible = false
             unmuteButton.isVisible = true
         else
@@ -350,8 +351,10 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
         
+        -- stop the animation for the jet
         Runtime:removeEventListener("enterFrame", RotateJet)
 
+        -- stop the music
         audio.stop(mainMenuMusicChannel)
 
     -----------------------------------------------------------------------------------------

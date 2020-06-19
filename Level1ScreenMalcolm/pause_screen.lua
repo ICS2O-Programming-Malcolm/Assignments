@@ -42,16 +42,6 @@ local resumeButton
 local mainMenuButton
 
 -----------------------------------------------------------------------------------------
---SOUNDS
------------------------------------------------------------------------------------------
-
--- local correctSound = audio.loadSound("Sounds/correct.mp3")
--- local correctSoundChannel
-
--- local incorrectSound = audio.loadSound("Sounds/incorrect.mp3")
--- local incorrectSoundChannel
-
------------------------------------------------------------------------------------------
 --LOCAL FUNCTIONS
 -----------------------------------------------------------------------------------------
 

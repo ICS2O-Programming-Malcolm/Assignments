@@ -147,7 +147,7 @@ function scene:show( event )
         if (soundOn == true) then
 
             -- play the background music
-            instructionsMusicChannel = audio.play(instructionsMusic, {loops = -1})
+            instructionsMusicChannel = audio.play(instructionsMusic, {channel = 3, loops = -1})
 
         else
 

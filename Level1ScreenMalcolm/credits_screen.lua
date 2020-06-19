@@ -147,7 +147,7 @@ function scene:show( event )
         if (soundOn == true) then
 
             -- play the credits music
-            creditsMusicChannel = audio.play(creditsMusic, {loops = -1})
+            creditsMusicChannel = audio.play(creditsMusic, {channel = 4, loops = -1})
 
         else
 
