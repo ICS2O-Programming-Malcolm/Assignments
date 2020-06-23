@@ -37,6 +37,10 @@ local bkg
 local mainMenuButton
 
 ----------------------------------------------------------------------------------------
+-- GLOBAL VARIABLES
+-----------------------------------------------------------------------------------------
+
+playLoseSound = false
 
 -----------------------------------------------------------------------------------------
 -- SOUNDS
@@ -161,13 +165,6 @@ function scene:hide( event )
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
-
-        if (soundOn == true) then
-
-            -- stop lose sound effect
-            audio.stop(loseSoundChannel)
-            
-        end
 
     -----------------------------------------------------------------------------------------
 

@@ -313,14 +313,16 @@ function scene:show( event )
         -- start the animation for the jet
         Runtime:addEventListener("enterFrame", RotateJet)
 
+        mainMenuMusicChannel = audio.play(mainMenuMusic, {channel = 2, loops = -1})
+
         if (soundOn == true) then
             -- play the background music
-            mainMenuMusicChannel = audio.play(mainMenuMusic, {channel = 2, loops = -1})
+            audio.resume(mainMenuMusicChannel)
             muteButton.isVisible = false
             unmuteButton.isVisible = true
         else
             -- pause the background music
-            audio.pause(mainMenuMusic)
+            audio.pause(mainMenuMusicChannel)
             muteButton.isVisible = true
             unmuteButton.isVisible = false
         end
@@ -354,7 +356,7 @@ function scene:hide( event )
         -- stop the animation for the jet
         Runtime:removeEventListener("enterFrame", RotateJet)
 
-        -- stop the music
+        -- stop the main menu music
         audio.stop(mainMenuMusicChannel)
 
     -----------------------------------------------------------------------------------------
@@ -364,8 +366,7 @@ function scene:hide( event )
 
         -- Remove the mute/unmute listeners
         RemoveMuteUnmuteListeners()
-
-        
+     
     end
 
 end -- function scene:hide( event )

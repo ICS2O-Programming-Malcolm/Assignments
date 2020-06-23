@@ -61,6 +61,12 @@ local userAnswer
 local textTouched = false
 
 -----------------------------------------------------------------------------------------
+-- GLOBAL VARIABLES
+-----------------------------------------------------------------------------------------
+
+playExplosionSound = false
+
+-----------------------------------------------------------------------------------------
 --SOUNDS
 -----------------------------------------------------------------------------------------
 
@@ -91,6 +97,10 @@ end
 -- Transition to the lose screen
 local function YouLoseTransition()
 
+    timerOn = false
+
+    composer.hideOverlay("crossFade", 400)
+
     composer.gotoScene( "you_lose", {effect = "zoomOutIn", time = 2000} )
 
 end
@@ -103,6 +113,8 @@ local function ExplosionAnimation()
     explosion.isVisible = true
 
     if (soundOn == true) then
+
+        playExplosionSound = true
 
         explosionSoundChannel = audio.play(explosionSound, {channel = 6})
 
@@ -492,12 +504,6 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
         --parent:resumeGame()
-
-        if (soundOn == true) then
-
-            audio.stop(explosionSoundChannel)
-    
-        end
 
     -----------------------------------------------------------------------------------------
 

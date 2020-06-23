@@ -29,16 +29,6 @@ sceneName = "level1_screen"
 local scene = composer.newScene( sceneName )
 
 -----------------------------------------------------------------------------------------
--- CONSTANTS
------------------------------------------------------------------------------------------
-
--- Constants for movement speed with arrow keys (NOT IN USE YET)
-local UP_SPEED = -2
-local DOWN_SPEED = 2
-local LEFT_SPEED = -2
-local RIGHT_SPEED = 2
-
------------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
 
@@ -48,8 +38,8 @@ local RIGHT_SPEED = 2
 local bkg_image
 
 -- Variables for the countdown timer
-local TOTAL_SECONDS = 30
-local secondsLeft = 30
+local TOTAL_SECONDS = 20
+local secondsLeft = 20
 local clockText
 local countDownTimer
 
@@ -87,6 +77,16 @@ local questionsAnswered = 0
 
 -- Variable for the pause button
 local pauseButton
+
+-----------------------------------------------------------------------------------------
+-- GLOBAL VARIABLES
+-----------------------------------------------------------------------------------------
+
+missile1DirectionLeft = true
+
+missile2DirectionUp = true
+
+missile3DirectionDownLeft = true
 
 -----------------------------------------------------------------------------------------
 -- SOUNDS
@@ -213,6 +213,139 @@ local function ReplaceCharacter()
     AddRuntimeListeners()
 end
 
+local function MoveMissile1()
+
+    if (missile1DirectionLeft == true) then
+
+        missile1.x = missile1.x - 3
+        
+    else 
+
+        missile1.x = missile1.x + 3
+        
+	end
+
+    if (missile1.x < 300) then
+
+        missile1:scale(-1, 1)
+        
+        missile1DirectionLeft = false 
+        
+	end
+
+    if (missile1.x > 700) then
+
+        missile1:scale(-1, 1)
+        
+        missile1DirectionLeft = true
+        
+	end
+
+end
+
+local function MoveMissile2()
+
+    if (missile2DirectionUp == true) then
+
+        missile2.y = missile2.y - 3
+        
+    else 
+
+        missile2.y = missile2.y + 3
+        
+	end
+
+    if (missile2.y < 450) then
+
+        missile2:scale(-1, 1)
+        
+        missile2DirectionUp = false 
+        
+	end
+
+    if (missile2.y > 700) then
+
+        missile2:scale(-1, 1)
+        
+        missile2DirectionUp = true
+        
+	end
+
+end
+
+local function MoveMissile3()
+
+    if (missile3DirectionDownLeft == true) then
+
+        missile3.x = missile3.x - 3
+        missile3.y = missile3.y + 3
+        
+    else 
+
+        missile3.x = missile3.x + 3
+        missile3.y = missile3.y - 3
+        
+	end
+
+    if (missile3.x < 750) then
+
+        missile3:scale(-1, 1)
+        
+        missile3DirectionDownLeft = false 
+        
+	end
+
+    if (missile3.x > 900) then
+
+        missile3:scale(-1, 1)
+        
+        missile3DirectionDownLeft = true
+        
+	end
+
+end
+
+-- This function will add missile physics bodies
+local function AddMissilePhysicsBodies()
+
+    physics.addBody(missile1, "static",  {density=0, friction=0, bounce=0} )
+    physics.addBody(missile2, "static",  {density=0, friction=0, bounce=0} )
+    physics.addBody(missile3, "static",  {density=0, friction=0, bounce=0} )
+
+end
+
+-- This function will remove missile physics bodies
+local function RemoveMissilePhysicsBodiesForCollisions()
+
+    if (theMissile == missile1) then
+
+        physics.removeBody(missile1)
+        missile1.isVisible = false
+
+    end
+
+    if (theMissile == missile2) then
+
+        physics.removeBody(missile2)
+        missile2.isVisible = false
+
+    end
+
+    if (theMissile == missile3) then
+
+        physics.removeBody(missile3)
+        missile3.isVisible = false
+
+    end
+
+end
+
+local function RemoveCharacterPhysicsBodyForCollisions()
+
+    physics.removeBody(character)
+
+end
+
 -- This function will make all the missiles visible
 local function MakeMissilesVisible()
     missile1.isVisible = true
@@ -232,14 +365,21 @@ local function onCollision(self, event)
             -- stop the character from moving
             motionx = 0
 
+            -- set the gravity
+            physics.setGravity(0, 0)
+
+            -- remove character physics body
+            timer.performWithDelay(100, RemoveCharacterPhysicsBodyForCollisions)
+
             -- make the character invisible
             character.isVisible = false
 
             -- store the event.target in the variable theMissile
             theMissile = event.target
 
-            -- set the gravity
-            physics.setGravity(0, 0)
+            timer.performWithDelay(100, RemoveMissilePhysicsBodiesForCollisions)
+
+            timer.pause(countDownTimer)
 
             -- show overlay with math question
             composer.showOverlay( "level1_question", { isModal = true, effect = "crossFade", time = 100})
@@ -301,16 +441,14 @@ end
 local function AddPhysicsBodies()
 
     --add to the physics engine
-    physics.addBody(missile1, "static",  {density=0, friction=0, bounce=0} )
-    physics.addBody(missile2, "static",  {density=0, friction=0, bounce=0} )
-    physics.addBody(missile3, "static",  {density=0, friction=0, bounce=0} )
-
     physics.addBody(leftW, "static", {density=1, friction=0.3, bounce=0.2} )
     physics.addBody(rightW, "static", {density=1, friction=0.3, bounce=0.2} )
     physics.addBody(topW, "static", {density=1, friction=0.3, bounce=0.2} )
     physics.addBody(floor, "static", {density=1, friction=0.3, bounce=0.2} )
 
     physics.addBody(evilShip, "static", {density=1, friction=0.3, bounce=0.2})
+
+    AddMissilePhysicsBodies()
 
 end
 
@@ -321,11 +459,6 @@ local function RemovePhysicsBodies()
     physics.removeBody(rightW)
     physics.removeBody(topW)
     physics.removeBody(floor)
-
-end
-
--- This function will remove missile bodies if they still exist on the screen
-local function RemoveMissilePhysicsBodies()
 
     if (missile1.isBodyActive == true) then
 
@@ -363,6 +496,8 @@ local function UpdateTime()
 
         clockText.isVisible = false
 
+        character.isVisible = false
+
         YouLoseTransition()
 
     end
@@ -378,7 +513,7 @@ local function StartTimer()
     -- maker timer visible
     clockText.isVisible = true
 
-	-- create a countdown timer that loops infinitely
+    -- create a countdown timer that loops infinitely
     countDownTimer = timer.performWithDelay(1000, UpdateTime, 0)
         
 end
@@ -410,11 +545,17 @@ end
 -- This function will resume the game
 function ResumeGameFromQuestion() 
 
+    -- set gravity
+    physics.setGravity(0, GRAVITY)
+
     -- make character visible again
     character.isVisible = true
 
-    -- set gravity
-    physics.setGravity(0, GRAVITY)
+    -- add physics body
+    physics.addBody( character, "dynamic", { density=0, friction=0.5, bounce=0, rotation=0 } )
+
+    -- prevent character from being able to tip over
+    character.isFixedRotation = true
     
     if (questionsAnswered > 0) then
         if (theMissile ~= nil) and (theMissile.isBodyActive == true) then
@@ -422,6 +563,8 @@ function ResumeGameFromQuestion()
             physics.removeBody(theMissile)
         end
     end
+
+    timer.resume(countDownTimer)
 
 end
 
@@ -619,19 +762,20 @@ function scene:show( event )
         -- Start the timer
         StartTimer()
 
-
     elseif ( phase == "did" ) then
 
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
 
-        -- If the sound has not been muted, play the level 1 music
-        if (soundOn == true) then
+        level1MusicChannel = audio.play(level1Music, {channel = 5, loops = -1})
 
-            -- play level 1 music
-            level1MusicChannel = audio.play(level1Music, {channel = 5, loops = -1})
-            
+        if (soundOn == true) then
+            -- play the background music
+            audio.resume(level1MusicChannel)
+        else
+            -- pause the background music
+            audio.pause(level1MusicChannel)
         end
 
         -- Initialize questionsAnswered to 0
@@ -639,6 +783,12 @@ function scene:show( event )
 
         -- create the character, add physics bodies and runtime listeners
         ReplaceCharacter()
+
+        Runtime:addEventListener("enterFrame", MoveMissile1)
+
+        Runtime:addEventListener("enterFrame", MoveMissile2)
+
+        Runtime:addEventListener("enterFrame", MoveMissile3)
 
         -- make missiles visible
         MakeMissilesVisible()
@@ -669,14 +819,9 @@ function scene:hide( event )
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
 
-        -- If the sound has not been muted, stop the audio
-        if (soundOn == true) then
-
-            -- stop level 1 music
-            audio.pause(level1MusicChannel)
+        -- stop level 1 music
+        audio.stop(level1MusicChannel)
             
-        end
-
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
@@ -687,14 +832,18 @@ function scene:hide( event )
 
         RemovePhysicsBodies()
 
-        RemoveMissilePhysicsBodies()
-
         physics.stop()
 
         -- remove runtime listeners that move the character
         RemoveArrowEventListeners()
 
         RemoveRuntimeListeners()
+
+        Runtime:removeEventListener("enterFrame", MoveMissile1)
+
+        Runtime:removeEventListener("enterFrame", MoveMissile2)
+
+        Runtime:removeEventListener("enterFrame", MoveMissile3)
 
         -- remove character
         display.remove(character)
